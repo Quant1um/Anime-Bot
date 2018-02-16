@@ -1,16 +1,17 @@
 var http = require("http");
 var queryString = require("querystring");
 
+var port = process.env.PORT || 8000;
 http.createServer(function(request, response) {
     if(request.method === "POST") {
         readAll(request, response, function(data) {
-			if(!process(request, response, data))
+			if(!processData(request, response, data))
 				endResponse(response, 400);
         });
     }else
 		endResponse(response, 405)
 
-}).listen(process.env.PORT || 8080);
+}).listen(port);
 console.log("Server created!");
 
 //https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
@@ -44,7 +45,7 @@ var processors = {
 	confirmation: require("./processors/confirmation")
 };
 
-function process(request, response, queryData){
+function processData(request, response, queryData){
 	if(typeof queryData !== "object") return false;
 	if(typeof queryData.type !== "string") return false;
 	if(typeof queryData.object !== "object") return false;
