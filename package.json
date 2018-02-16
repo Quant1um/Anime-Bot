@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-	"start": "node index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -22,12 +22,13 @@
     "parsing"
   ],
   "author": "Quant1um",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/Quant1um/Anime-Bot/issues"
   },
   "homepage": "https://github.com/Quant1um/Anime-Bot#readme",
   "dependencies": {
-    "booru": "^0.4.0"
+    "booru": "^0.4.0",
+    "vk-io": "^4.0.0-alpha.10"
   }
 }

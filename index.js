@@ -30,14 +30,13 @@ function readAll(request, response, callback) {
 	
     request.on("end", function() {
         request.post = JSON.parse(queryData);
-		console.info(request.post);
         callback(request.post);
     });
 }
 
 function endResponse(response, code, message){
 	response.writeHead(code, {'Content-Type': 'text/plain'});
-	if(typeof message === "string") response.write(message);
+	if(typeof message !== "undefined") response.write(message);
 	response.end();
 }
 
