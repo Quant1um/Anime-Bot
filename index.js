@@ -36,7 +36,8 @@ function readAll(request, response, callback) {
 }
 
 function endResponse(response, code, message){
-	response.writeHead(code, message, {'Content-Type': 'text/plain'});
+	response.writeHead(code, {'Content-Type': 'text/plain'});
+	if(typeof message === "string") response.write(message);
 	response.end();
 }
 
