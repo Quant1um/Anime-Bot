@@ -1,0 +1,32 @@
+{
+  "name": "animebot",
+  "version": "0.0.1",
+  "description": "Anime Bot which parses anime images from any booru and send it to end user",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Quant1um/Anime-Bot.git"
+  },
+  "keywords": [
+    "anime",
+    "bot",
+    "heroku",
+    "vk",
+    "social",
+    "network",
+    "booru",
+    "parsing"
+  ],
+  "author": "Quant1um",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Quant1um/Anime-Bot/issues"
+  },
+  "homepage": "https://github.com/Quant1um/Anime-Bot#readme",
+  "dependencies": {
+    "booru": "^0.4.0"
+  }
+}
