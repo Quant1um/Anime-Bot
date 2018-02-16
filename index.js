@@ -47,20 +47,14 @@ var processors = {
 
 function processData(request, response, queryData){
 	if(typeof queryData !== "object") return false;
-	console.log("query is defined");
 	if(typeof queryData.type !== "string") return false;
-	console.log("type validated");
 	if(typeof queryData.group_id !== "number") return false;
-	console.log("id validated");
 	if(typeof queryData.secret !== "string") return false;
-	console.log("key validated");
+	console.log("aaa: " + process.env.group_id + "; " + process.env.secret_key");
 	if(queryData.group_id !== process.env.group_id) return false;
-	console.log("id validated (comparison with " + process.env.group_id + ")");
 	if(queryData.secret !== process.env.secret_key) return false;
-	console.log("key validated (comparison with " + process.env.secret_key + ")");
 	if(typeof processors[queryData.type] !== "function") return false;
-	console.log("processor validated");
-	
+
 	processors[queryData.type]({
 		object: queryData.object,
 		end: function(code, message){
