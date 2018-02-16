@@ -1,7 +1,17 @@
+var vk = require("vk-io");
 var http = require("http");
-var queryString = require("querystring");
 
 var port = process.env.PORT || 8000;
+
+if(typeof process.env.secret_key === "undefined")
+	throw new Error("secret_key is undefined, set it in Heroku Dashboard or CLI.");
+if(typeof process.env.group_id === "undefined")
+	throw new Error("group_id is undefined, set it in Heroku Dashboard or CLI.");
+if(typeof process.env.access_token === "undefined")
+	throw new Error("access_token is undefined, set it in Heroku Dashboard or CLI.");
+if(typeof process.env.confirmation_code === "undefined")
+	throw new Error("confirmation_code is undefined, set it in Heroku Dashboard or CLI.");
+
 http.createServer(function(request, response) {
     if(request.method === "POST") {
         readAll(request, response, function(data) {
@@ -18,18 +28,18 @@ console.log("Server created!");
 function readAll(request, response, callback) {
     if(typeof callback !== "function") return null;
 
-	var queryData = "";
+	var query_data = "";
     request.on("data", function(data) {
-        queryData += data;
-        if(queryData.length > 1e6) {
-            queryData = "";
+        query_data += data;
+        if(query_data.length > 1e6) {
+            query_data = "";
             endResponse(response, 413);
             request.connection.destroy();
         }
     });
 	
     request.on("end", function() {
-        request.post = JSON.parse(queryData);
+        request.post = JSON.parse(query_data);
         callback(request.post);
     });
 }
@@ -40,6 +50,9 @@ function endResponse(response, code, message){
 	response.end();
 }
 
+var vk_api = new vk.VK();
+vk_api.setToken(process.env.access_token);
+ 
 var processors = {
 	message_new: require("./processors/message"),
 	confirmation: require("./processors/confirmation")
