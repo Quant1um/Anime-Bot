@@ -47,7 +47,6 @@ var processors = {
 
 function processData(request, response, queryData){
 	if(typeof queryData.type !== "string") return false;
-	if(typeof queryData.object !== "object") return false;
 	if(typeof queryData.group_id !== "number") return false;
 	if(typeof queryData.secret_key !== "string") return false;
 	if(queryData.group_id !== process.env.group_id) return false;
