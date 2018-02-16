@@ -50,7 +50,7 @@ function processData(request, response, queryData){
 	if(typeof queryData.type !== "string") return false;
 	if(typeof queryData.group_id !== "number") return false;
 	if(typeof queryData.secret !== "string") return false;
-	console.log("aaa: " + process.env.group_id + "; " + process.env.secret_key");
+	console.log("aaa: " + process.env.group_id + "; " + process.env.secret_key);
 	if(queryData.group_id !== process.env.group_id) return false;
 	if(queryData.secret !== process.env.secret_key) return false;
 	if(typeof processors[queryData.type] !== "function") return false;
