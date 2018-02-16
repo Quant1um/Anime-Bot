@@ -46,11 +46,12 @@ var processors = {
 };
 
 function processData(request, response, queryData){
-	if(typeof queryData !== "object") return false;
 	if(typeof queryData.type !== "string") return false;
 	if(typeof queryData.object !== "object") return false;
 	if(typeof queryData.group_id !== "number") return false;
+	if(typeof queryData.secret_key !== "string") return false;
 	if(queryData.group_id !== process.env.group_id) return false;
+	if(queryData.secret_key !== process.env.secret_key) return false;
 	if(typeof processors[queryData.type] !== "function") return false;
 	
 	processors[queryData.type]({
