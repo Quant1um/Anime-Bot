@@ -10,7 +10,7 @@ http.createServer(function(request, response) {
     }else
 		endResponse(response, 405)
 
-}).listen(8000);
+}).listen(process.env.PORT || 8080);
 console.log("Server created!");
 
 //https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
