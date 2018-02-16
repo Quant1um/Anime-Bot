@@ -57,7 +57,7 @@ function processData(request, response, queryData){
 	processors[queryData.type]({
 		object: queryData.object,
 		end: function(code, message){
-			endResponse(response, message, code);
+			endResponse(response, code, message);
 		}
 	});
 	return true;
