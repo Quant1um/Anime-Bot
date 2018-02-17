@@ -1,4 +1,3 @@
-var vk = require("vk-io");
 var http = require("http");
 
 var port = process.env.PORT || 8000;
@@ -13,12 +12,12 @@ if(typeof process.env.confirmation_code === "undefined")
 	throw new Error("confirmation_code is undefined, set it in Heroku Dashboard or CLI.");
 
 http.createServer(function(request, response) {
-    if(request.method === "POST") {
-        readAll(request, response, function(data) {
+	if(request.method === "POST") {
+		readAll(request, response, function(data) {
 			if(!processData(request, response, data))
 				endResponse(response, 400);
-        });
-    }else
+		});
+	}else
 		endResponse(response, 405)
 
 }).listen(port);
@@ -26,34 +25,32 @@ console.log("Server created!");
 
 //https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
 function readAll(request, response, callback) {
-    if(typeof callback !== "function") return null;
+	if(typeof callback !== "function") return null;
 
 	var query_data = "";
-    request.on("data", function(data) {
-        query_data += data;
-        if(query_data.length > 1e6) {
-            query_data = "";
-            endResponse(response, 413);
-            request.connection.destroy();
-        }
-    });
+	request.on("data", function(data) {
+		query_data += data;
+		if(query_data.length > 1e5) {
+			query_data = "";
+			endResponse(response, 413);
+			request.connection.destroy();
+		}
+	});
 	
-    request.on("end", function() {
-        request.post = JSON.parse(query_data);
-        callback(request.post);
-    });
+	request.on("end", function() {
+		request.post = JSON.parse(query_data);
+		callback(request.post);
+	});
 }
 
 function endResponse(response, code, message){
 	response.writeHead(code, {'Content-Type': 'text/plain'});
-	if(typeof message !== "undefined") response.write(message);
+	if(typeof message !== "undefined") 
+		response.write(message);
 	response.end();
 }
 
-var vk_api = new vk.VK({
-	token: process.env.access_token
-});
-
+var api = require("./apiwrapper");
 var processors = {
 	message_new: require("./processors/message"),
 	message_allow: require("./processors/allow"),
@@ -71,7 +68,7 @@ function processData(request, response, queryData){
 
 	processors[queryData.type]({
 		object: queryData.object,
-		vk: vk_api,
+		vk: api,
 		end: function(code, message){
 			endResponse(response, code, message);
 		}
