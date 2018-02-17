@@ -15,7 +15,7 @@ module.exports = {
 		if(Array.isArray(attachements))
 			options.attachements = stringifyAttachements(attachements);
 		
-		vk.api.messages.send(options);
+		vk_api.api.messages.send(options);
 	}
 };
 
