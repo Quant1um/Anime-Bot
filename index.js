@@ -50,11 +50,13 @@ function endResponse(response, code, message){
 	response.end();
 }
 
-var vk_api = new vk.VK();
-vk_api.setToken(process.env.access_token);
- 
+var vk_api = new vk.VK({
+	token: process.env.access_token
+});
+
 var processors = {
 	message_new: require("./processors/message"),
+	message_allow: require("./processors/allow"),
 	confirmation: require("./processors/confirmation")
 };
 
@@ -69,6 +71,7 @@ function processData(request, response, queryData){
 
 	processors[queryData.type]({
 		object: queryData.object,
+		vk: vk_api,
 		end: function(code, message){
 			endResponse(response, code, message);
 		}
