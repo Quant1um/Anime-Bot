@@ -7,7 +7,7 @@ module.exports = {
 	vk: vk_api,
 	send: function(user_id, message, attachements){
 		var options = {
-			user_id: user_id,
+			user_id: data.object.user_id,
 			message: message,
 			random_id: Math.floor(Math.random() * 1e9)
 		};
