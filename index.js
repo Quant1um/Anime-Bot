@@ -2,6 +2,9 @@ var http = require("http");
 
 var port = process.env.PORT || 8000;
 
+var api = require("./apiwrapper");
+api.send(0, "test");
+
 if(typeof process.env.secret_key === "undefined")
 	throw new Error("secret_key is undefined, set it in Heroku Dashboard or CLI.");
 if(typeof process.env.group_id === "undefined")
@@ -50,7 +53,6 @@ function endResponse(response, code, message){
 	response.end();
 }
 
-var api = require("./apiwrapper");
 var processors = {
 	message_new: require("./processors/message"),
 	message_allow: require("./processors/allow"),
