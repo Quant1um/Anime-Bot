@@ -1,9 +1,7 @@
 var http = require("http");
 
 var port = process.env.PORT || 8000;
-
-
-
+/*
 if(typeof process.env.secret_key === "undefined")
 	throw new Error("secret_key is undefined, set it in Heroku Dashboard or CLI.");
 if(typeof process.env.group_id === "undefined")
@@ -12,6 +10,8 @@ if(typeof process.env.access_token === "undefined")
 	throw new Error("access_token is undefined, set it in Heroku Dashboard or CLI.");
 if(typeof process.env.confirmation_code === "undefined")
 	throw new Error("confirmation_code is undefined, set it in Heroku Dashboard or CLI.");
+*/
+console.info(require("./tags"));
 
 http.createServer(function(request, response) {
 	if(request.method === "POST") {
@@ -27,7 +27,7 @@ console.log("Server created!");
 
 //https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
 function readAll(request, response, callback) {
-	if(typeof callback !== "function") return null;
+	if(typeof callback !== "function") return;
 
 	var query_data = "";
 	request.on("data", function(data) {
@@ -46,7 +46,7 @@ function readAll(request, response, callback) {
 }
 
 function endResponse(response, code, message){
-	response.writeHead(code, {'Content-Type': 'text/plain'});
+	response.writeHead(code, {"Content-Type": "text/plain"});
 	if(typeof message !== "undefined") 
 		response.write(message);
 	response.end();
@@ -70,7 +70,7 @@ function processData(request, response, queryData){
 
 	processors[queryData.type]({
 		object: queryData.object,
-		vk: api,
+		api: api,
 		end: function(code, message){
 			endResponse(response, code, message);
 		}

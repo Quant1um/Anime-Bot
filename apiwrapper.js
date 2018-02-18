@@ -21,7 +21,7 @@ module.exports = {
 
 function stringifyAttachements(attachements){
 	if(!Array.isArray(attachements))
-		return null;
+		return;
 	
 	var strings = [];
 	attachements.forEach((attachement) => {

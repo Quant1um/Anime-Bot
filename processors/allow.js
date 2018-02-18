@@ -1,4 +1,4 @@
 module.exports = function(data){
-	console.log("message_allow");
+	data.vk.send(data.object.user_id, "message_allow: " + JSON.stringify(data.object));
 	data.end(200, "ok");
 };
