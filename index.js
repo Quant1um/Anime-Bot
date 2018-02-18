@@ -1,7 +1,7 @@
 var http = require("http");
 
 var port = process.env.PORT || 8000;
-/*
+
 if(typeof process.env.secret_key === "undefined")
 	throw new Error("secret_key is undefined, set it in Heroku Dashboard or CLI.");
 if(typeof process.env.group_id === "undefined")
@@ -10,8 +10,7 @@ if(typeof process.env.access_token === "undefined")
 	throw new Error("access_token is undefined, set it in Heroku Dashboard or CLI.");
 if(typeof process.env.confirmation_code === "undefined")
 	throw new Error("confirmation_code is undefined, set it in Heroku Dashboard or CLI.");
-*/
-console.info(require("./tags"));
+
 
 http.createServer(function(request, response) {
 	if(request.method === "POST") {
