@@ -16,4 +16,5 @@ function onExit(){ //hacky way to wait async operation to complete
 	
 	api.setOnline(false).then(setDone, setDone);
 	while(!done);
+	console.log("done");
 }
