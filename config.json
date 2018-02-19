@@ -1,0 +1,30 @@
+{
+	"tags": [
+		{
+			"_comment": "An example of tag description",
+			"name": "yuri",
+			"booru_tag": "yuri",
+			"aliases": [
+				"yuri"
+			]
+		},
+		
+		{
+			"name": "kancolle",
+			"booru_tag": "kantai_collection",
+			"aliases": [
+				"kantai collection",
+				"kancolle"
+			],
+			"taglist_name": null
+		},
+	
+		{
+			"name": "thighhighs",
+			"booru_tag": "thighhighs",
+			"aliases": [
+				"thighhighs"
+			]
+		}
+	]
+}

@@ -1,15 +1,10 @@
+//initialization
 var http = require("http");
-var port = process.env.PORT || 8000;
+global.config = require("./config");
+global.api = require("./apiwrapper");
+require("./onlinestatus");
 
-if(typeof process.env.secret_key === "undefined")
-	throw new Error("secret_key is undefined, set it in Heroku Dashboard or CLI.");
-if(typeof process.env.group_id === "undefined")
-	throw new Error("group_id is undefined, set it in Heroku Dashboard or CLI.");
-if(typeof process.env.access_token === "undefined")
-	throw new Error("access_token is undefined, set it in Heroku Dashboard or CLI.");
-if(typeof process.env.confirmation_code === "undefined")
-	throw new Error("confirmation_code is undefined, set it in Heroku Dashboard or CLI.");
-
+//creating listener
 http.createServer(function(request, response) {
 	if(request.method === "POST") {
 		readAll(request, response, function(data) {
@@ -19,7 +14,7 @@ http.createServer(function(request, response) {
 	}else
 		endResponse(response, 405)
 
-}).listen(port);
+}).listen(global.config.port);
 console.log("Server created!");
 
 //https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
@@ -29,7 +24,7 @@ function readAll(request, response, callback) {
 	var query_data = "";
 	request.on("data", function(data) {
 		query_data += data;
-		if(query_data.length > 1e5) {
+		if(query_data.length > global.config.max_input_size) {
 			query_data = "";
 			endResponse(response, 413);
 			request.connection.destroy();
@@ -49,8 +44,7 @@ function endResponse(response, code, message){
 	response.end();
 }
 
-require("./onlinestatus");
-var api = require("./apiwrapper");
+//processing events received from VK Callback API
 var processors = {
 	message_new: require("./processors/message"),
 	message_allow: require("./processors/allow"),
@@ -62,13 +56,12 @@ function processData(request, response, queryData){
 	if(typeof queryData.type !== "string") return false;
 	if(typeof queryData.group_id !== "number") return false;
 	if(typeof queryData.secret !== "string") return false;
-	if(queryData.group_id != process.env.group_id) return false;
-	if(queryData.secret != process.env.secret_key) return false;
+	if(queryData.group_id != global.config.group_id) return false;
+	if(queryData.secret != global.config.secret_key) return false;
 	if(typeof processors[queryData.type] !== "function") return false;
 
 	processors[queryData.type]({
 		object: queryData.object,
-		api: api,
 		end: function(code, message){
 			endResponse(response, code, message);
 		}

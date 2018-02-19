@@ -1,21 +1,15 @@
-var api = require("./apiwrapper");
-api.setOnline(true);
+global.api.setOnline(true);
 
-process.on("exit", onExit);
-process.on("SIGINT", onExit);
-process.on("SIGTERM", onExit);
-process.on("SIGUSR1", onExit);
-process.on("SIGUSR2", onExit);
-process.on("uncaughtException", onExit);
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+process.on("SIGUSR1", shutdown);
+process.on("SIGUSR2", shutdown);
+process.on("uncaughtException", shutdown);
 
-function onExit(){ //hacky way to wait async operation to complete
-	var done = false;
-	function setDone(error){
-		done = true;
-		throw error;
-	}
-	
-	api.setOnline(false).then(setDone, setDone);
-	while(!done);
-	console.log("done");
+//https://help.heroku.com/ROG3H81R/why-does-sigterm-handling-not-work-correctly-in-nodejs-with-npm
+function shutdown(err) {
+	console.log("Shutdown...");
+	global.api.setOnline(false);
+	if (err) console.error(err.stack || err);
+	setTimeout(() => process.exit(err ? 1 : 0), 4000).unref();
 }

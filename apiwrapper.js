@@ -1,6 +1,6 @@
 var vk = require("vk-io");
 var vk_api = new vk.VK({
-	token: process.env.access_token
+	token: global.config.access_token
 });
 
 module.exports = {
@@ -20,8 +20,8 @@ module.exports = {
 	
 	setOnline: function(online){
 		return online ?
-			vk_api.api.groups.enableOnline({group_id: process.env.group_id}) :
-			vk_api.api.groups.disableOnline({group_id: process.env.group_id});
+			vk_api.api.groups.enableOnline({group_id: global.config.group_id}) :
+			vk_api.api.groups.disableOnline({group_id: global.config.group_id});
 	}
 };
 
