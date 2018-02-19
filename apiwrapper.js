@@ -15,7 +15,13 @@ module.exports = {
 		if(Array.isArray(attachements))
 			options.attachements = stringifyAttachements(attachements);
 		
-		vk_api.api.messages.send(options);
+		return vk_api.api.messages.send(options);
+	},
+	
+	setOnline: function(online){
+		return online ?
+			vk_api.api.groups.enableOnline({group_id: process.env.group_id}) :
+			vk_api.api.groups.disableOnline({group_id: process.env.group_id});
 	}
 };
 
