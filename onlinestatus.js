@@ -10,8 +10,9 @@ process.on("uncaughtException", onExit);
 
 function onExit(){ //hacky way to wait async operation to complete
 	var done = false;
-	function setDone(){
+	function setDone(error){
 		done = true;
+		throw error;
 	}
 	
 	api.setOnline(false).then(setDone, setDone);
