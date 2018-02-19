@@ -9,7 +9,7 @@ module.exports = {};
 
 //config entries with default values
 var entries = {
-	port: 8000,
+	port: process.env.PORT || 8000,
 	max_input_size: 1e5,
 	group_id: undefined,
 	secret_key: undefined,
