@@ -2,11 +2,13 @@ var fs = require("fs");
 const CONFIG_ENTRIES = {
 	port: process.env.PORT || 8000,
 	max_input_size: 1e5,
+	use_https: false,
 	group_id: undefined,
 	secret_key: undefined,
 	access_token: undefined,
 	confirmation_code: undefined,
-	tags: require("./config/tags")
+	tags: require("./config/tags"),
+	album_name: "Bot Content Album"
 };
 
 module.exports = class Config{
