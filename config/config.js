@@ -7,7 +7,7 @@ const CONFIG_ENTRIES = {
 	secret_key: undefined,
 	access_token: undefined,
 	confirmation_code: undefined,
-	tags: require("./config/tags"),
+	tags: require("./tags"),
 	album_name: "Bot Content Album"
 };
 

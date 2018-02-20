@@ -1,5 +1,5 @@
 //imports
-var Config = require("./config");
+var Config = require("./config/config");
 var ApiWrapper = require("./api_wrapper");
 
 //initialization
@@ -16,7 +16,7 @@ require("./online_status");
 
 var processors = {
 	message: require("./processors/message"),
-	message_subscribe: require("./processors/allow")
+	message_subscribers: require("./processors/allow")
 };
 
 global.api.startListener({

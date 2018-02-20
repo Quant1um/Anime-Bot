@@ -1,3 +1,4 @@
 module.exports = function(context){
-	global.api.send(object.getUserId(), "messages allowed");
+	if(context.isSubscribed())
+		global.api.send(object.getUserId(), "messages allowed");
 };
