@@ -23,14 +23,14 @@ module.exports = class Listener extends events.EventEmitter{
 					query_data += data;
 					if(query_data.length > this.input_limit) {
 						query_data = "";
-						drop(response, 413);
+						Listener.drop(response, 413);
 						request.connection.destroy();
 					}
 				});
 	
 				request.on("end", () => this.emit("data", JSON.parse(query_data), request, response, (code, message) => Listener.drop(response, code, message)));
 			}else
-				drop(response, 405)
+				Listener.drop(response, 405)
 		})).listen(this.port);
 		this.emit("start");
 	}
