@@ -1,7 +1,6 @@
 //imports
 var Config = require("./config");
 var ApiWrapper = require("./api_wrapper");
-var Listener = require("./listener");
 
 //initialization
 global.config = new Config("./config.json", "utf8");
