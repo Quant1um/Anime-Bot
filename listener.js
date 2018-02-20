@@ -15,22 +15,23 @@ module.exports = class Listener extends events.EventEmitter{
 		if(this.running)
 			throw new Error("Listener already running!");
 		
+		var self = this;
 		(this.server = http.createServer(function(request, response) {
-			if(request.method === this.method) {
+			if(request.method == self.method) {
 				//https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
 				var query_data = "";
 				request.on("data", function(data) {
 					query_data += data;
-					if(query_data.length > this.input_limit) {
+					if(query_data.length > self.input_limit) {
 						query_data = "";
 						Listener.drop(response, 413);
 						request.connection.destroy();
 					}
 				});
 	
-				request.on("end", () => this.emit("data", JSON.parse(query_data), request, response, (code, message) => Listener.drop(response, code, message)));
+				request.on("end", () => self.emit("data", JSON.parse(query_data), request, response, (code, message) => Listener.drop(response, code, message)));
 			}else
-				Listener.drop(response, 405)
+				Listener.drop(response, 405);
 		})).listen(this.port);
 		this.emit("start");
 	}

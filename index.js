@@ -29,15 +29,15 @@ var processors = {
 	confirmation: require("./processors/confirmation")
 };
 
-function processData(queryData, drop){
-	if(typeof queryData !== "object") return false;
-	if(typeof queryData.type !== "string") return false;
-	if(typeof queryData.group_id !== "number") return false;
-	if(typeof queryData.secret !== "string") return false;
-	if(queryData.group_id != global.config.group_id) return false;
-	if(queryData.secret != global.config.secret_key) return false;
-	if(typeof processors[queryData.type] !== "function") return false;
+function processData(query_data, drop){
+	if(typeof query_data !== "object") return false;
+	if(typeof query_data.type !== "string") return false;
+	if(typeof query_data.group_id !== "number") return false;
+	if(typeof query_data.secret !== "string") return false;
+	if(query_data.group_id != global.config.group_id) return false;
+	if(query_data.secret != global.config.secret_key) return false;
+	if(typeof processors[query_data.type] !== "function") return false;
 
-	processors[queryData.type](queryData.object, drop);
+	processors[query_data.type](query_data.object, drop);
 	return true;
 }
