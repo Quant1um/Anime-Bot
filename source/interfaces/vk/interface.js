@@ -32,8 +32,9 @@ module.exports = class VKInterface extends Interface {
             this.online_changed = true;
         }
 
+        console.log("VK listener starts at port " + config.port + "!");
         this.api.startListener({
-            port: vk_config.port,
+            port: config.port,
             https: vk_config.use_https
         }, async (context, next) => {
             handle(context.type, context);
