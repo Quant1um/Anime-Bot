@@ -40,7 +40,6 @@ module.exports = class VKInterface extends Interface {
             super.handle(context.type, context);
             await next();
         });
-
     }
 
     unload(config) {
