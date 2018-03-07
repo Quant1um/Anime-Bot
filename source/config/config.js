@@ -55,7 +55,12 @@ module.exports = class Config {
             else if (Utils.isValid(entryValue) &&
                      typeof entryValue === "object" &&
                      Utils.isValid(input[entry]))
-                value = Config.traverse(entryValue, input[entry], {}, entryDebugName);
+                value = Config.traverse({
+                    name: entryDebugName,
+                    object: {},
+                    input: input[entry],
+                    entries: entryValue
+                });
             else
                 value = input[entry] ||
                     process.env[entry] ||
