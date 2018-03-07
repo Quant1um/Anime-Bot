@@ -37,7 +37,7 @@ module.exports = class VKInterface extends Interface {
             port: config.port,
             https: vk_config.use_https
         }, async (context, next) => {
-            handle(context.type, context);
+            super.handle(context.type, context);
             await next();
         });
 
