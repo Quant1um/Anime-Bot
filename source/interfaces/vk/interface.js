@@ -42,7 +42,7 @@ module.exports = class VKInterface extends Interface {
 
     }
 
-    unload(vk_config) {
+    unload(config) {
         if (this.online_changed)
             this.api.setOnline(false);
     }

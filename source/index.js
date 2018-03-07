@@ -1,7 +1,7 @@
 "use strict";
 
 var Config = require("./config/config");
-global.config = new Config("./../config.json", "utf8");
+global.config = new Config("./config.json", "utf8");
 
 var interfaces = {
     vk: require("./interfaces/vk/interface")
