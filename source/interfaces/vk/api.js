@@ -1,4 +1,4 @@
-var VK = require("vk-io");
+const VK = require("vk-io");
 
 module.exports = class VKApi{
 	

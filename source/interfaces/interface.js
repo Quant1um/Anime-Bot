@@ -1,5 +1,5 @@
-﻿var Utils = require("./../utils");
-var Processor = require("./processor");
+﻿const Utils = require("./../utils");
+const Processor = require("./processor");
 
 module.exports = class Interface {
 

@@ -1,6 +1,6 @@
-var Processor = require("./../../processor");
+const Processor = require("./../../processor");
 
-module.exports = class SubsciribeProcessor extends Processor{
+module.exports = class SubscribeProcessor extends Processor{
 
     process(context) {
         context.send(context.getMessage().getText() || "no text");

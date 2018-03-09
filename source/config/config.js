@@ -1,5 +1,5 @@
-var fs = require("fs");
-var Utils = require("./../utils");
+const Filesystem = require("fs");
+const Utils = require("./../utils");
 
 const CONFIG_ENTRIES = {
 	port: process.env.PORT || 8000
@@ -14,7 +14,7 @@ module.exports = class Config {
     }
 
     load() {
-        var content = fs.readFileSync(this.filename, this.encoding);
+        var content = Filesystem.readFileSync(this.filename, this.encoding);
         var parsedConfig = JSON.parse(content);
         if (typeof parsedConfig !== "object")
             throw new Error("Config is not an object!");
@@ -43,12 +43,12 @@ module.exports = class Config {
         var input = options.input;
 
         Object.keys(entries).forEach((entry) => {
-            var entryDebugName = entry;
+            let entryDebugName = entry;
             if (Utils.isValid(name))
                 entryDebugName = name + "." + entryDebugName;
 
-            var value = null;
-            var entryValue = entries[entry];
+            let value = null;
+            let entryValue = entries[entry];
 
             if (typeof entryValue === "function")
                 value = entryValue(object[entry]);

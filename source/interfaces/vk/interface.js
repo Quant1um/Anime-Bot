@@ -1,5 +1,5 @@
-﻿var Interface = require("./../interface");
-var VKApi = require("./api");
+﻿const Interface = require("./../interface");
+const VKApi = require("./api");
 
 module.exports = class VKInterface extends Interface {
 

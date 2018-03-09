@@ -20,6 +20,9 @@
     <Compile Include="source\interfaces\processor.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="source\tokenizer.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="source\utils.js">
       <SubType>Code</SubType>
     </Compile>
