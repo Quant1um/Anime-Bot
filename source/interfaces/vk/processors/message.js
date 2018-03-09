@@ -12,7 +12,7 @@ module.exports = class MessageProcessor extends Processor {
             tags = Utils.splitString(context.getText(), [" ", ",", ";", "|"]);
             
         Booru.search("yandere", tags, { limit: 1, random: true })
-            .then(booru.commonfy)
+            .then(Booru.commonfy)
             .then(images => {
                 for (let image of images)
                     context.sendPhoto(image.common.file_url);
