@@ -1,4 +1,4 @@
-const Processor = require("./../../processor");
+const Processor = require("#interfaces/processor");
 
 module.exports = class SubscribeProcessor extends Processor{
 

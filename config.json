@@ -1,7 +1,32 @@
 {
+  "stats_file": "stats.json",
+  "locale_file": "locale.json",
+
+  "interfaces": {
+    "vk": "source/interfaces/vk/interface.js"
+  },
+
   "vk": {
     "album_name": "Bot Content Album",
     "modify_online_status": true,
     "use_https": false
+  },
+
+  "booru_search": {
+    "separators": [ " ", ";", ",", "|", "+" ],
+    "default_tags": [],
+    "default_booru": "safebooru",
+    "aliases": {
+      "rating:safe": [ "safe" ],
+      "rating:questionable": [ "questionable" ],
+      "rating:explicit": [ "explicit" ]
+    },
+    "aliases_regexp": {
+      "order:{0}": [ "orderby:([A-Za-z]+)" ]
+    },
+    "functional_tags": {
+      "booru": "booru:([A-Za-z0-9\\.]+)",
+      "limit": [ "count:([0-9]+)", "limit:([0-9]+)" ]
+    }
   }
 }

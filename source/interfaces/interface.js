@@ -1,5 +1,6 @@
-﻿const Utils = require("./../utils");
-const Processor = require("./processor");
+﻿const Utils = require("#utils");
+const Processor = require("#interfaces/processor");
+const Debug = require("#debug");
 
 module.exports = class Interface {
 
@@ -23,7 +24,7 @@ module.exports = class Interface {
             this.processors[event] = new processor();
         else
             throw new Error("Undefined processor!");
-        console.log("Processor bound for event of type \"" + event + "\".");
+        Debug.log("interface", "Processor has been bound for event of type \"{0}\".", event);
     }
 
     handle(event, context) {
@@ -33,7 +34,7 @@ module.exports = class Interface {
             throw new Error("Invalid context!");
         else if (!Utils.isValid(this.processors[event])) {
             if (!this.missing_processors[event]) {
-                console.warn("Event processor for event " + event + " is missing! Event of that type will be ignored.");
+                Debug.warn("interface", "Event processor for event \"{0}\" is missing! Event of that type will be ignored.", event);
                 this.missing_processors[event] = true;
             }
         } else

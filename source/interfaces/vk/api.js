@@ -1,4 +1,5 @@
 const VK = require("vk-io");
+const Debug = require("#debug");
 
 module.exports = class VKApi{
 	
@@ -8,23 +9,11 @@ module.exports = class VKApi{
 		this.group_id = options.group_id;
 	}
 	
-	send(user_id, message, attachements){
-		var options = {
-			user_id: user_id,
-			random_id: Math.floor(Math.random() * 1e9),
-			message: message
-		};
-		
-		if(Array.isArray(attachements))
-			options.attachements = stringifyAttachements(attachements);
-		
-		return this.vk.api.messages.send(options);
-	}
-	
 	setOnline(online){
-		return online ?
-			this.vk.api.groups.enableOnline({group_id: this.group_id}) :
-			this.vk.api.groups.disableOnline({group_id: this.group_id});
+        return (online ?
+            this.vk.api.groups.enableOnline({ group_id: this.group_id }) :
+            this.vk.api.groups.disableOnline({ group_id: this.group_id }))
+            .catch((err) => Debug.error("vk interface", err.stack || err.message || err));
 	}
 	
 	startListener(options, callback){
@@ -32,8 +21,8 @@ module.exports = class VKApi{
 		this.vk.updates.use(callback);
 		this.vk.updates.startWebhook({
 			port: options.port || 8000,
-			tls: options.https || false
-		}).catch(console.error);
+            tls: options.https || false
+        }).catch((err) => Debug.error("vk interface", err.stack || err.message || err));
 	}
 	
 	static stringifyAttachements(attachements){

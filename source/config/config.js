@@ -1,79 +1,34 @@
-const Filesystem = require("fs");
-const Utils = require("./../utils");
+const Loadable = require("#config/loadable");
+const Utils = require("#utils");
+const Debug = require("#debug");
+const Entry = require("#config/entries/entry");
+const NestedEntry = require("#config/entries/nested_entry");
+const ValueEntry = require("#config/entries/value_entry");
 
-const CONFIG_ENTRIES = {
-	port: process.env.PORT || 8000
-};
+module.exports = class Config extends Loadable{
 
-module.exports = class Config {
+    retrieve(name, entry) {
+        if (Utils.isValid(this[name]))
+            return this[name];
 
-    constructor(filename, encoding) {
-        this.filename = filename;
-        this.encoding = encoding || "utf8";
-        this.load();
-    }
+        if (!Utils.isValid(entry))
+            throw new Error("Entry argument is not valid!");
+        else if (!(entry instanceof Entry)) {
+            switch (typeof entry) {
+                case "object": entry = new NestedEntry(entry); break;
+                case "string": entry = new ValueEntry(entry); break;
+                default: throw new Error("Entry argument has invalid type!");
+            } 
+        }
 
-    load() {
-        var content = Filesystem.readFileSync(this.filename, this.encoding);
-        var parsedConfig = JSON.parse(content);
-        if (typeof parsedConfig !== "object")
-            throw new Error("Config is not an object!");
-        this.parsedConfig = parsedConfig;
+        var obj = this.parsedData[name];
+        if (!Utils.isValid(obj)) {
+            Debug.warn("config", "Invalid config entry: {0}.", name);
+            return;
+        }
 
-        Config.traverse({
-            input: this.parsedConfig,
-            entries: CONFIG_ENTRIES,
-            object: this
-        });
-    }
-
-    put(name, entrySet) {
-        var object = Config.traverse({
-            input: this.parsedConfig,
-            entries: entrySet
-        });
-        Object.defineProperty(this, name, { get: () => object });
-        return object;
-    }
-
-    static traverse(options) {
-        var name = options.name;
-        var object = options.object || {};
-        var entries = options.entries;
-        var input = options.input;
-
-        Object.keys(entries).forEach((entry) => {
-            let entryDebugName = entry;
-            if (Utils.isValid(name))
-                entryDebugName = name + "." + entryDebugName;
-
-            let value = null;
-            let entryValue = entries[entry];
-
-            if (typeof entryValue === "function")
-                value = entryValue(object[entry]);
-            else if (Utils.isValid(entryValue) &&
-                     typeof entryValue === "object" &&
-                     Utils.isValid(input[entry]))
-                value = Config.traverse({
-                    name: entryDebugName,
-                    object: {},
-                    input: input[entry],
-                    entries: entryValue
-                });
-            else
-                value = input[entry] ||
-                    process.env[entry] ||
-                    entryValue;
-
-            if (!Utils.isValid(value))
-                console.warn(`Config entry "${entryDebugName}" is not defined!`);
-            else if (Utils.isValid(entryValue) && typeof value !== typeof entryValue)
-                console.warn(`Config entry type mismatch: ${entryDebugName} has type ${typeof value}. Expected: ${typeof entryValue}!`);
-            else
-                Object.defineProperty(object, entry, { get: () => value });
-        });
-
-        return object;
+        var parsed = entry.parse(name, obj);
+        Object.defineProperty(this, name, { get: () => parsed });
+        return parsed;
     }
 };

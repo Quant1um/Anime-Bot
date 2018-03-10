@@ -1,21 +1,24 @@
-﻿const Interface = require("./../interface");
-const VKApi = require("./api");
+﻿const VKApi = require("#interfaces/vk/api");
+const Interface = require("#interfaces/interface");
+const ValueEntry = require("#config/entries/value_entry");
+const Debug = require("#debug");
 
 module.exports = class VKInterface extends Interface {
 
     startup(config) {
-        super.addProcessor("message", require("./processors/message"));
-        super.addProcessor("subscribe", require("./processors/subscribe"));
+        super.addProcessor("message", require("#interfaces/vk/processors/message"));
+        super.addProcessor("subscribe", require("#interfaces/vk/processors/subscribe"));
 
-        var vk_config = config.put("vk",
+        var vk_config = config.retrieve("vk",
         {
-            group_id: null,
-            secret_key: null,
-            access_token: null,
-            confirmation_code: null,
-            use_https: false,
-            album_name: "Bot Content Album",
-            modify_online_status: false
+            group_id: new ValueEntry("number"),
+            secret_key: new ValueEntry("string"),
+            access_token: new ValueEntry("string"),
+            confirmation_code: new ValueEntry("string"),
+            use_https: new ValueEntry("boolean", false),
+            album_name: new ValueEntry("string", "Bot Album"),
+            modify_online_status: new ValueEntry("boolean", false),
+            port: new ValueEntry("number", process.env.PORT || 8000)
         });
 
         this.api = new VKApi({
@@ -32,9 +35,9 @@ module.exports = class VKInterface extends Interface {
             this.online_changed = true;
         }
 
-        console.log("VK listener starts at port " + config.port + "!");
+        Debug.log("vk inteface", "VK listener starts at port {0}!", vk_config.port);
         this.api.startListener({
-            port: config.port,
+            port: vk_config.port,
             https: vk_config.use_https
         }, async (context, next) => {
             super.handle(context.type, context);

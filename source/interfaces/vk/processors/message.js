@@ -1,24 +1,19 @@
-const Processor = require("./../../processor");
-const Booru = require("booru");
-const Utils = require("./../../../utils");
+const Processor = require("#interfaces/processor");
+const Utils = require("#utils");
+const Debug = require("#debug");
 
 module.exports = class MessageProcessor extends Processor {
 
     process(context) {
         context.setActivity();
 
-        var tags = [];
-        if (context.hasText())
-            tags = Utils.splitString(context.getText(), [" ", ",", ";", "|"]);
-            
-        Booru.search("yandere", tags, { limit: 1, random: true })
-            .then(Booru.commonfy)
-            .then(images => {
+        global.booru.search(context.getText())
+            .then((images) => {
                 for (let image of images)
                     context.sendPhoto(image.common.file_url);
             })
-            .catch(err => {
-                console.log(err.message);
+            .catch((err) => {
+                Debug.log("booru search", err.stack || err.message || err);
                 context.send("Error while searching images from booru: " + err.message);
             });
     }
