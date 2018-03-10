@@ -61,13 +61,13 @@ module.exports = class Utils {
             let obj = input[key];
             if (Array.isArray(obj)) {
                 for (let value of obj) {
-                    if (this.isValid(inverse[value]))
+                    if (Utils.isValid(inverse[value]))
                         throw new Error("Dublication at value \"" + value + "\" of key \"" + key + "\".");
                     else
                         inverse[value] = key;
                 }
-            } else if (this.isValid(obj)) {
-                if (this.isValid(inverse[obj]))
+            } else if (Utils.isValid(obj)) {
+                if (Utils.isValid(inverse[obj]))
                     throw new Error("Dublication at value \"" + obj + "\" of key \"" + key + "\".");
                 else
                     inverse[obj] = key;
@@ -99,8 +99,8 @@ module.exports = class Utils {
     static transform(source, destination, input) {
         var regex = new RegExp("^" + source + "$", "i");
         var args = regex.exec(input);
-        if (this.isValid(args))
-            return this.format(destination, args.slice(1));
+        if (Utils.isValid(args))
+            return Utils.format(destination, args.slice(1));
         else
             return null;
     }
@@ -112,11 +112,11 @@ module.exports = class Utils {
      * @returns {any} Nested object that referred by given reference.
      */
     static resolveReference(object, reference) {
-        var splitted = this.splitString(reference, ["."]);
+        var splitted = Utils.splitString(reference, ["."]);
 
         for (let ref of splitted) {
             object = object[ref];
-            if (!this.isValid(object))
+            if (!Utils.isValid(object))
                 return null;
         }
 
