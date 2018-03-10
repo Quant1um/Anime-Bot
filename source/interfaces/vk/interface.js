@@ -11,14 +11,14 @@ module.exports = class VKInterface extends Interface {
 
         var vk_config = config.retrieve("vk",
             {
-                group_id: new ValueEntry("number", process.env.group_id),
+                group_id: new ValueEntry("number", +process.env.group_id),
                 secret_key: new ValueEntry("string", process.env.secret_key),
                 access_token: new ValueEntry("string", process.env.access_token),
                 confirmation_code: new ValueEntry("string", process.env.confirmation_code),
                 use_https: new ValueEntry("boolean", false),
                 album_name: new ValueEntry("string", "Bot Album"),
                 modify_online_status: new ValueEntry("boolean", false),
-                port: new ValueEntry("number", process.env.PORT || 8000)
+                port: new ValueEntry("number", +process.env.PORT || 8000)
             });
 
         this.api = new VKApi({
