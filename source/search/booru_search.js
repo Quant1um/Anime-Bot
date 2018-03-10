@@ -14,7 +14,7 @@ module.exports = class BooruSearch {
         this.functional_tags = Utils.invert(options.functional_tags);
     }
 
-    search(context, query) {
+    search(query) {
         var tags = [];
         if (query.length)
             tags = Utils.splitString(query, this.separators);
