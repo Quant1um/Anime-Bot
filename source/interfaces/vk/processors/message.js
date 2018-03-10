@@ -7,7 +7,7 @@ module.exports = class MessageProcessor extends Processor {
     process(context) {
         context.setActivity();
 
-        global.booru.search(context.getText())
+        global.main.booru.search(context.getText())
             .then((images) => {
                 for (let image of images)
                     context.sendPhoto(image.common.file_url);

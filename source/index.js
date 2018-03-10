@@ -19,66 +19,99 @@ var L18n        = require("#config/l18n");
 var Statistics  = require("#config/stats");
 var BooruSearch = require("#search/booru_search");
 
-var config = global.config = new Config("config.json", "utf8");
-var l18n = global.l18n = new L18n(config.retrieve("locale_file", "string"));
-var stats = global.stats = new Statistics(config.retrieve("stats_file", "string"));
-var booru = global.booru = new BooruSearch(config.retrieve("booru_search", {
-    separators: new ValueEntry("array", [" "]),
-    default_tags: new ValueEntry("array", []),
-    default_booru: new ValueEntry("string"),
-    aliases: new JoinedEntry({}),
-    aliases_regexp: new JoinedEntry({}),
-    functional_tags: new JoinedEntry({})
-}));
+module.exports = class Main {
 
-var interfaces = config.retrieve("interfaces", new JoinedEntry({}));
+    constructor() {
+        if (Utils.isValid(global.main))
+            throw new Error("Instance of Main class already present!");
+        global.main = this;
 
-function startupInterfaces() {
-    for (let name in interfaces) {
-        let interface_desc = interfaces[name];
-        let resolved = null;
+        this.load();
+    }
 
-        switch (typeof interface_desc) {
-            case "string":
-                let ctor = require(Utils.resolvePath(interface_desc));
-                resolved = new ctor(); break;
-            case "function": resolved = new interface_desc(); break;
-            case "object": resolved = interface_desc; break;
+    load() {
+        this.config = new Config("config.json", "utf8");
+        this.booru = new BooruSearch(this.config.retrieve("booru_search", {
+            separators: new ValueEntry("array", [" "]),
+            default_tags: new ValueEntry("array", []),
+            default_booru: new ValueEntry("string"),
+            aliases: new JoinedEntry({}),
+            aliases_regexp: new JoinedEntry({}),
+            functional_tags: new JoinedEntry({})
+        }));
+
+        var l18n_name = this.config.retrieve("locale_file", "string");
+        this.localization = Utils.isValid(l18n_name) ? new L18n(l18n_name, "utf8") : new L18n.Null();
+
+        var stats_name = this.config.retrieve("stats_file", "string");
+        this.stats = Utils.isValid(stats_name) ? new Statistics(stats_name, "utf8") : new Statistics.Null();
+
+        this.interfaces = this.config.retrieve("interfaces", new JoinedEntry({}));
+        this.startupInterfaces();
+        this.registerExitHandler();
+
+        this.stats.increment("system.loads", 1);
+    }
+
+    unload() {
+        this.unloadInterfaces();
+        this.stats.save();
+    }
+
+    startupInterfaces() {
+        for (let name in this.interfaces) {
+            let interface_desc = this.interfaces[name];
+            let resolved = null;
+
+            switch (typeof interface_desc) {
+                case "string":
+                    let ctor = require(Utils.resolvePath(interface_desc));
+                    resolved = new ctor(); break;
+                case "function": resolved = new interface_desc(); break;
+                case "object": resolved = interface_desc; break;
+            }
+
+            if (!Utils.isValid(resolved))
+                throw new Error("Undefined interface (" + name + "): " + interface_desc);
+
+            this.interfaces[name] = resolved;
+            resolved.startup(this.config);
+            Debug.log("main", "Interface has been bound: {0}", name);
         }
-
-        if (!Utils.isValid(resolved))
-            throw new Error("Undefined interface (" + name + "): " + interface_desc);
-
-        interfaces[name] = resolved;
-        resolved.startup(config);
-        Debug.log("main", "Interface has been bound: {0}", name);
     }
-}
 
-function unloadInterfaces() {
-    for (let name in interfaces) 
-        interfaces[name].unload(config);
-}
-
-startupInterfaces();
-
-process.on("SIGINT", cleanup);
-process.on("SIGTERM", cleanup);
-process.on("SIGUSR1", cleanup);
-process.on("SIGUSR2", cleanup);
-process.on("uncaughtException", cleanup);
-
-//https://help.heroku.com/ROG3H81R/why-does-sigterm-handling-not-work-correctly-in-nodejs-with-npm
-function cleanup(err) {
-    Debug.log("main", "Shutdown... Please, wait!");
-    if (err) Debug.error("main", err.stack || err);
-    try {
-        unloadInterfaces();
-    } catch (e) {
-        if (err) Debug.error("main", "----------------------");
-        Debug.error("main", e.stack || e);
+    unloadInterfaces() {
+        for (let name in this.interfaces)
+            this.interfaces[name].unload(this.config);
     }
-    setTimeout(() => process.exit(err ? 1 : 0), 2000).unref();
-}
+
+    registerExitHandler() {
+        var bound = this.dispose.bind(this);
+        process.once("SIGINT", bound);
+        process.once("SIGTERM", bound);
+        process.once("SIGUSR1", bound);
+        process.once("SIGUSR2", bound);
+        process.once("uncaughtException", bound);
+    }
+
+    //https://help.heroku.com/ROG3H81R/why-does-sigterm-handling-not-work-correctly-in-nodejs-with-npm
+    dispose(err) {
+        if (this.disposed) return;
+        this.disposed = true;
+
+        Debug.log("main", "Shutdown... Please, wait!");
+        if (err) Debug.error("main", err.stack || err.message || err);
+        try {
+            this.unload();
+        } catch (err2) {
+            if (err) Debug.error("main", "--------------------------");
+            Debug.error("main", err2.stack || err2.message || err2);
+        }
+        setTimeout(() => process.exit(err ? 1 : 0), 2000).unref();
+    }
+};
+
+
+
 
 

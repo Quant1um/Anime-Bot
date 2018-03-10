@@ -2,11 +2,6 @@ const Utils = require("#utils");
 
 module.exports = class Debug {
 
-    static info(tag, object) {
-        Debug.log(tag, "Object info: ");
-        console.info(object);
-    }
-
     static log(tag, string) {
         console.log(Debug.prepareString(tag, string, Array.prototype.slice.call(arguments, 2)));
     }

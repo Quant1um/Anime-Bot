@@ -1,1 +1,1 @@
-require("./source/index");
+new (require("./source/index"))();

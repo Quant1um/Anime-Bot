@@ -14,7 +14,7 @@ module.exports = class BooruSearch {
         this.functional_tags = Utils.invert(options.functional_tags);
     }
 
-    search(query) {
+    search(context, query) {
         var tags = [];
         if (query.length)
             tags = Utils.splitString(query, this.separators);
@@ -36,15 +36,12 @@ module.exports = class BooruSearch {
             }
         }
 
-        //TODO
         var state = {
             booru: this.default_booru,
             tags: tags,
             limit: 1,
             random: true
         };
-
-        Debug.info("booru search", state);
 
         return Booru.search(state.booru, state.tags, { limit: state.limit, random: state.random })
             .then((images) => {

@@ -1,3 +1,6 @@
 ﻿module.exports = class FunctionalTag {
-    //TODO
+
+    handle(context, state, args) {
+        throw new Error("Not implemented!");
+    }
 };
