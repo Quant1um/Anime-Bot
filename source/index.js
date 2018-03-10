@@ -48,7 +48,7 @@ module.exports = class Main {
 
         this.interfaces = this.config.retrieve("interfaces", new JoinedEntry({}));
         this.startupInterfaces();
-        this.registerExitHandler();
+        //this.registerExitHandler();
 
         this.stats.increment("system.loads", 1);
     }
