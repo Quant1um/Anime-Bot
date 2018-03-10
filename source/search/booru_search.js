@@ -1,5 +1,6 @@
 ﻿const Booru = require("booru");
 const Utils = require("#utils");
+const Debug = require("#debug");
 
 module.exports = class BooruSearch {
 
@@ -42,6 +43,8 @@ module.exports = class BooruSearch {
             limit: 1,
             random: true
         };
+
+        Debug.info("booru search", state);
 
         return Booru.search(state.booru, state.tags, { limit: state.limit, random: state.random })
             .then((images) => {

@@ -4,16 +4,16 @@ const Path = require("path");
 
 const FORMAT_ARG_REGEX = /{(\d+)}/g;
 
-module.exports = {
+module.exports = class Utils {
 
     /**
      * Returns true if, and only if, given value is undefined or null.
      * @param {any} value Given value
      * @returns {boolean} True, if, and only if, given value is undefined or null, otherwise false.
      */
-    isValid(value) {
+    static isValid(value) {
         return typeof value !== "undefined" && value !== null;
-    },
+    }
 
     /**
      * Like String.prototype.split(string) but accepts array of delimitiers, instead of single delimitiers.
@@ -22,7 +22,7 @@ module.exports = {
      * @param {string[]} delimiters Array of delimitiers
      * @returns {string[]} Array of string that splittable one contains and separated using given array of delimitiers.
      */
-    splitString(string, delimiters) {
+    static splitString(string, delimiters) {
         var result = [];
         var temp = "";
         for (let i = 0; i < string.length; i++) {
@@ -40,7 +40,7 @@ module.exports = {
             result.push(temp);
 
         return result;
-    },
+    }
 
     /**
      * Transforms object (key -> value) to another object (value -> key).
@@ -52,7 +52,7 @@ module.exports = {
      * @param {object} input Key -> value pair set
      * @returns {object} Value -> key pair set
      */
-    invert(input) {
+    static invert(input) {
         if (typeof input !== "object")
             return {};
 
@@ -75,7 +75,7 @@ module.exports = {
         }
 
         return inverse;
-    },
+    }
 
     /**
      * Formats string: replaces any "{n}" with argument given in args parameter.
@@ -84,10 +84,10 @@ module.exports = {
      * @param {object} args Arguments that need to insert into format string.
      * @returns {string} Formatted string
      */
-    format(format, args) {
+    static format(format, args) {
         return format.replace(FORMAT_ARG_REGEX, (match, key) =>
             typeof args[key] !== 'undefined' ? args[key] : match);
-    },
+    }
 
     /**
      * Transforms string of one format to string of another.
@@ -96,14 +96,14 @@ module.exports = {
      * @param {string} input Input string that matches source regexp (for example, "orderby:random")
      * @returns {string} String that has destination format (within given examples, "order:random"). Arguments ("{0}") will be replaced with source's matching groups
      */
-    transform(source, destination, input) {
+    static transform(source, destination, input) {
         var regex = new RegExp("^" + source + "$", "i");
         var args = regex.exec(input);
         if (this.isValid(args))
             return this.format(destination, args.slice(1));
         else
             return null;
-    },
+    }
 
     /**
      * Resolves reference to object ("object1.object2.object3") of given object.
@@ -111,7 +111,7 @@ module.exports = {
      * @param {string} reference Reference to nested object of format "object1.object2.object3"
      * @returns {any} Nested object that referred by given reference.
      */
-    resolveReference(object, reference) {
+    static resolveReference(object, reference) {
         var splitted = this.splitString(reference, ["."]);
 
         for (let ref of splitted) {
@@ -121,14 +121,14 @@ module.exports = {
         }
 
         return object;
-    },
+    }
 
     /**
      * Resolves path relative to current working directory
      * @param {string} path Path, relative to current working directory
      * @returns {string} Absolute path that refers to same file/direction as given path.
      */
-    resolvePath(path) {
+    static resolvePath(path) {
         return Path.resolve(process.cwd(), path);
     }
 };

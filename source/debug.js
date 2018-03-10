@@ -1,20 +1,25 @@
 const Utils = require("#utils");
 
-module.exports = {
+module.exports = class Debug {
 
-    log(tag, string) {
-        console.log(this.prepareString(tag, string, Array.prototype.slice.call(arguments, 2)));
-    },
+    static info(tag, object) {
+        log(tag, "Object info: ");
+        console.info(object);
+    }
 
-    warn(tag, string) {
-        console.warn(this.prepareString(tag, string, Array.prototype.slice.call(arguments, 2)));
-    },
+    static log(tag, string) {
+        console.log(Debug.prepareString(tag, string, Array.prototype.slice.call(arguments, 2)));
+    }
 
-    error(tag, string) {
-        console.error(this.prepareString(tag, string, Array.prototype.slice.call(arguments, 2)));
-    },
+    static warn(tag, string) {
+        console.warn(Debug.prepareString(tag, string, Array.prototype.slice.call(arguments, 2)));
+    }
 
-    prepareString(tag, string, format_args) {
+    static error(tag, string) {
+        console.error(Debug.prepareString(tag, string, Array.prototype.slice.call(arguments, 2)));
+    }
+
+    static prepareString(tag, string, format_args) {
         return "[" + tag.toUpperCase() + "] " + Utils.format(string, format_args);
     }
 };
