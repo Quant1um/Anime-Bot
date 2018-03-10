@@ -3,7 +3,7 @@ const Utils = require("#utils");
 module.exports = class Debug {
 
     static info(tag, object) {
-        log(tag, "Object info: ");
+        Debug.log(tag, "Object info: ");
         console.info(object);
     }
 
