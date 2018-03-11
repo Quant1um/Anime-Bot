@@ -1,11 +1,17 @@
 ﻿const Loadable = require("#config/loadable");
 const Utils = require("#utils/utils");
 const Debug = require("#utils/debug");
+const ReferenceResolver = require("#utils/reference_resolver");
 
 module.exports = class L18n extends Loadable{
 
+    load() {
+        super.load();
+        this.resolver = new ReferenceResolver(this.parsed_data);
+    }
+
     get(key) {
-        return Utils.resolveReference(this.parsedData, key);
+        return this.resolver.get(key);
     }
 };
 

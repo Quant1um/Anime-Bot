@@ -49,6 +49,9 @@
     <Compile Include="source\utils\dictionary.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="source\utils\reference_resolver.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="source\utils\utils.js">
       <SubType>Code</SubType>
     </Compile>

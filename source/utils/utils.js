@@ -97,49 +97,6 @@ module.exports = class Utils {
     }
 
     /**
-     * Resolves reference to object ("object1.object2.object3") of given object and returns nested object that referred by given reference.
-     * Example: call Utils.resolveReference({ root: object, reference: "inner.innermore.innermost" }) is the same as object.inner.innermore.innermost or object["inner"]["innermore"]["innermost"]
-     * TODO: test
-     * @param {object} options Options object
-     * @param {object} options.root Base object
-     * @param {string} options.reference String reference in format "object1.object2.object3" that points to nested base object's object.
-     * @param {boolean} options.create Boolean flag, if true, then if any of nested objects are not exist, it will be created (except last/innermost), otherwise, if non-existent nested object found, null will be returned
-     * @param {any} options.value This value will be assigned to innermost nested object if value is defined (if null, then null will be assigned), but if value is a function (that takes one argument - current value of the innermost nested object), then result of a function will be assigned
-     * @returns {any} Nested object that referred by given reference.
-     */
-    static resolveReference(options) {
-        var root = options.root;
-        var reference = options.reference;
-        var create = options.create || false;
-        var value = options.value;
-
-        if (!(Utils.isValid(root) && Utils.isValid(reference)))
-            return null;
-
-        var splitted = Utils.splitString(reference, ["."]);
-        if (!splitted.length)
-            return null;
-
-        var parent = null;
-        var object = root;
-        for (let i = 0; i < splitted.length; i++) {
-            if (!Utils.isValid(object)) {
-                if(create) parent[splitted[i - 1]] = object = {};
-                else return null;
-            }
-
-            parent = object;
-            object = parent[splitted[i]] || null;
-        }
-
-        if (typeof value !== "undefined")
-            parent[splitted[splitted.length - 1]] =
-                typeof value === "function" ? value(object) : value;
-
-        return object;
-    }
-
-    /**
      * Resolves path relative to current working directory
      * @param {string} path Path, relative to current working directory
      * @returns {string} Absolute path that refers to same file/direction as given path.

@@ -21,7 +21,7 @@ module.exports = class Config extends Loadable{
             } 
         }
 
-        var obj = this.parsedData[name];
+        var obj = this.parsed_data[name];
         if (!Utils.isValid(obj)) {
             Debug.warn("config", "Invalid config entry: {0}.", name);
             return;

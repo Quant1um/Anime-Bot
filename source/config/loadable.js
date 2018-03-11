@@ -19,9 +19,9 @@ module.exports = class Loadable {
             throw new Error("File at path " + this.filename + " does not exist!");
 
         var content = Filesystem.readFileSync(this.filename, this.encoding);
-        var parsedData = JSON.parse(content);
-        if (typeof parsedData !== "object")
+        var parsed_data = JSON.parse(content);
+        if (typeof parsed_data !== "object")
             throw new Error("Parsed data is not an object!");
-        this.parsedData = parsedData;
+        this.parsed_data = parsed_data;
     }
 };

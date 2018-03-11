@@ -1,23 +1,23 @@
 "use strict";
-//TODO refactor
 
-var Path = require("path");
-var Module = require("module");
-var _require = Module.prototype.require;
+const Path = require("path");
+const Module = require("module");
+const _require = Module.prototype.require;
 Module.prototype.require = function (path) {
     if (typeof path !== "undefined" && path[0] === "#")
         return _require.apply(this, [Path.normalize(__dirname + "/" + path.substr(1))]);
     return _require.apply(this, arguments);
 };
 
-var Debug       = require("#utils/debug");
-var Utils       = require("#utils/utils");
-var Config      = require("#config/config");
-var ValueEntry  = require("#config/entries/value_entry");
-var JoinedEntry = require("#config/entries/joined_entry");
-var L18n        = require("#config/l18n");
-var Statistics  = require("#config/stats");
-var BooruSearch = require("#search/booru_search");
+const Debug       = require("#utils/debug");
+const Utils       = require("#utils/utils");
+const Config      = require("#config/config");
+const ValueEntry  = require("#config/entries/value_entry");
+const JoinedEntry = require("#config/entries/joined_entry");
+const L18n        = require("#config/l18n");
+const Statistics  = require("#config/stats");
+const BooruSearch = require("#search/booru_search");
+const ReferenceResolver = require("#utils/reference_resolver");
 
 module.exports = class Main {
 
@@ -49,7 +49,7 @@ module.exports = class Main {
         this.interfaces = this.config.retrieve("interfaces", new JoinedEntry({}));
         this.startupInterfaces();
         this.registerExitHandler();
-        
+
         this.stats.increment("system.loads", 1);
     }
 
