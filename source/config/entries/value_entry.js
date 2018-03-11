@@ -1,12 +1,12 @@
-﻿const Utils = require("#utils");
+﻿const Utils = require("#utils/utils");
 const Entry = require("#config/entries/entry");
-const Debug = require("#debug");
+const Debug = require("#utils/debug");
 
 module.exports = class ValueEntry extends Entry{
 
     constructor(type, def) {
         super();
-        this.type = type || Utils.type(def);
+        this.type = type || ValueEntry.type(def);
         this.default = def;
     }
 
@@ -14,8 +14,14 @@ module.exports = class ValueEntry extends Entry{
         var value = object || this.default;
         if (!Utils.isValid(value))
             Debug.warn("config", "Undefined config value \"{0}\"!", name);
-        else if (Utils.isValid(this.type) && Utils.type(value) !== this.type)
-            Debug.warn("config", "Type mismatch at {0}: expected: {1}, received: {2}!", name, this.type, Utils.type(value));
+        else if (Utils.isValid(this.type) && ValueEntry.type(value) !== this.type)
+            Debug.warn("config", "Type mismatch at {0}: expected: {1}, received: {2}!", name, this.type, ValueEntry.type(value));
         return value;
+    }
+
+    static type(value) {
+        if (Array.isArray(value))
+            return "array";
+        return typeof value;
     }
 };

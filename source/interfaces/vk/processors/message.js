@@ -1,6 +1,6 @@
 const Processor = require("#interfaces/processor");
-const Utils = require("#utils");
-const Debug = require("#debug");
+const Utils = require("#utils/utils");
+const Debug = require("#utils/debug");
 
 module.exports = class MessageProcessor extends Processor {
 

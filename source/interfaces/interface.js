@@ -1,6 +1,6 @@
-﻿const Utils = require("#utils");
+﻿const Utils = require("#utils/utils");
 const Processor = require("#interfaces/processor");
-const Debug = require("#debug");
+const Debug = require("#utils/debug");
 
 module.exports = class Interface {
 

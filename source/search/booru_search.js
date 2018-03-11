@@ -1,6 +1,7 @@
 ﻿const Booru = require("booru");
-const Utils = require("#utils");
-const Debug = require("#debug");
+const Utils = require("#utils/utils");
+const Debug = require("#utils/debug");
+const Dictionary = require("#utils/dictionary");
 
 module.exports = class BooruSearch {
 
@@ -9,32 +10,19 @@ module.exports = class BooruSearch {
         this.default_tags = options.default_tags || [];
         this.default_booru = options.default_booru;
 
-        this.aliases = Utils.invert(options.aliases);
-        this.aliases_regexp = Utils.invert(options.aliases_regexp);
-        this.functional_tags = Utils.invert(options.functional_tags);
+        this.functional_tags = new Dictionary(options.functional_tags);
+        this.functional_aliases = new Dictionary(options.functional_aliases);
+        this.aliases = new Dictionary(options.aliases);
     }
 
     search(query) {
         var tags = [];
-        if (query.length)
+        if (Utils.isValid(query) && query.length)
             tags = Utils.splitString(query, this.separators);
         tags = tags.concat(this.default_tags);
 
-        for (let i = 0; i < tags.length; i++) {
-            let tag = tags[i];
-            if (Utils.isValid(this.aliases[tag]))
-                tags[i] = this.aliases[tag];
-            else {
-                for (let source in this.aliases_regexp) {
-                    let destination = this.aliases_regexp[source];
-                    let transformed = Utils.transform(source, destination, tag);
-                    if (Utils.isValid(transformed)) {
-                        tags[i] = transformed;
-                        break;
-                    }
-                }
-            }
-        }
+        for (let i = 0; i < tags.length; i++)
+            tags[i] = this.aliases.get(tags[i]) || tags[i];
 
         var state = {
             booru: this.default_booru,

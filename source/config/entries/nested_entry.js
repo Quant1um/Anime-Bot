@@ -1,5 +1,5 @@
 ﻿const Entry = require("#config/entries/entry");
-const Utils = require("#utils");
+const Utils = require("#utils/utils");
 
 module.exports = class NestedEntry extends Entry {
 

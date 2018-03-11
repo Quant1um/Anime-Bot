@@ -1,6 +1,6 @@
 ﻿const Loadable = require("#config/loadable");
-const Utils = require("#utils");
-const Debug = require("#debug");
+const Utils = require("#utils/utils");
+const Debug = require("#utils/debug");
 
 module.exports = class L18n extends Loadable{
 

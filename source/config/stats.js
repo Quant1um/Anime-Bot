@@ -1,7 +1,7 @@
 const Loadable = require("#config/loadable");
-const Utils = require("#utils");
+const Utils = require("#utils/utils");
 const Filesystem = require("fs");
-const Debug = require("#debug");
+const Debug = require("#utils/debug");
 
 const INDENT = "    ";
 

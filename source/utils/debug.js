@@ -1,4 +1,4 @@
-const Utils = require("#utils");
+const Utils = require("#utils/utils");
 
 module.exports = class Debug {
 
@@ -15,6 +15,13 @@ module.exports = class Debug {
     }
 
     static prepareString(tag, string, format_args) {
-        return "[" + tag.toUpperCase() + "] " + Utils.format(string, format_args);
+        var result = "";
+        if (Utils.isValid(tag))
+            result += "[" + tag.toUpperCase() + "] ";
+        if (Utils.isValid(string))
+            result += Utils.format(string, format_args)
+        else
+            result += "<INVALID>";
+        return result;
     }
 };

@@ -36,7 +36,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="source\config\stats.js" />
-    <Compile Include="source\debug.js" />
+    <Compile Include="source\utils\debug.js" />
     <Compile Include="source\search\booru_search.js">
       <SubType>Code</SubType>
     </Compile>
@@ -46,7 +46,10 @@
     <Compile Include="source\search\functionals\functional_tag.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="source\utils.js">
+    <Compile Include="source\utils\dictionary.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="source\utils\utils.js">
       <SubType>Code</SubType>
     </Compile>
     <Content Include="config.json" />
@@ -78,6 +81,7 @@
     <Folder Include="source\interfaces\vk\" />
     <Folder Include="source\" />
     <Folder Include="source\interfaces\vk\processors\" />
+    <Folder Include="source\utils\" />
     <Folder Include="source\search\" />
     <Folder Include="source\search\functionals\" />
   </ItemGroup>

@@ -1,7 +1,6 @@
 ﻿"use strict";
 
 const Path = require("path");
-
 const FORMAT_ARG_REGEX = /{(\d+)}/g;
 
 module.exports = class Utils {
@@ -15,12 +14,6 @@ module.exports = class Utils {
         return typeof value !== "undefined" && value !== null;
     }
 
-    static type(value) {
-        if (Array.isArray(value))
-            return "array";
-        return typeof value;
-    }
-
     /**
      * Like String.prototype.split(string) but accepts array of delimitiers, instead of single delimitiers.
      * Node: Each delimitier must has length of 1, otherwise that delimities will be ignored!
@@ -29,6 +22,11 @@ module.exports = class Utils {
      * @returns {string[]} Array of string that splittable one contains and separated using given array of delimitiers.
      */
     static splitString(string, delimiters) {
+        if (typeof string !== "string")
+            throw new Error("Argument error: string expected as first argument!");
+        if (!Array.isArray(delimiters))
+            throw new Error("Argument error: array expected as second argument!");
+
         var result = [];
         var temp = "";
         for (let i = 0; i < string.length; i++) {
@@ -87,28 +85,15 @@ module.exports = class Utils {
      * Formats string: replaces any "{n}" with argument given in args parameter.
      * https://stackoverflow.com/a/4673436
      * @param {string} format Base format string
-     * @param {object} args Arguments that need to insert into format string.
+     * @param {any[] | object} args Arguments that need to insert into format string.
      * @returns {string} Formatted string
      */
     static format(format, args) {
+        if (typeof format !== "string")
+            throw new Error("Argument error: string expected as first argument!");
+
         return format.replace(FORMAT_ARG_REGEX, (match, key) =>
             typeof args[key] !== 'undefined' ? args[key] : match);
-    }
-
-    /**
-     * Transforms string of one format to string of another.
-     * @param {string} source Source format as regular expression (for example, "orderby:([A-Za-z0-9\.]+)").
-     * @param {string} destination Destination format (for example, "order:{0}" where 0 - mathing group index)
-     * @param {string} input Input string that matches source regexp (for example, "orderby:random")
-     * @returns {string} String that has destination format (within given examples, "order:random"). Arguments ("{0}") will be replaced with source's matching groups
-     */
-    static transform(source, destination, input) {
-        var regex = new RegExp("^" + source + "$", "i");
-        var args = regex.exec(input);
-        if (Utils.isValid(args))
-            return Utils.format(destination, args.slice(1));
-        else
-            return null;
     }
 
     /**
@@ -160,6 +145,9 @@ module.exports = class Utils {
      * @returns {string} Absolute path that refers to same file/direction as given path.
      */
     static resolvePath(path) {
+        if (typeof path !== "string")
+            throw new Error("Argument error: string expected as first argument!");
+
         return Path.resolve(process.cwd(), path);
     }
 };

@@ -1,5 +1,5 @@
 ﻿const Filesystem = require("fs");
-const Utils = require("#utils");
+const Utils = require("#utils/utils");
 
 module.exports = class Loadable {
     constructor(filename, encoding) {

@@ -10,8 +10,8 @@ Module.prototype.require = function (path) {
     return _require.apply(this, arguments);
 };
 
-var Debug       = require("#debug");
-var Utils       = require("#utils");
+var Debug       = require("#utils/debug");
+var Utils       = require("#utils/utils");
 var Config      = require("#config/config");
 var ValueEntry  = require("#config/entries/value_entry");
 var JoinedEntry = require("#config/entries/joined_entry");
@@ -49,7 +49,7 @@ module.exports = class Main {
         this.interfaces = this.config.retrieve("interfaces", new JoinedEntry({}));
         this.startupInterfaces();
         this.registerExitHandler();
-
+        
         this.stats.increment("system.loads", 1);
     }
 
@@ -113,5 +113,11 @@ module.exports = class Main {
 
 
 
-
+/**
+ * TODO:
+ *   - functional tags
+ *   - command handler
+ *   - refactor:
+ *     - additional checks
+ */
 

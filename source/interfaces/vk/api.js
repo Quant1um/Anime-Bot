@@ -1,5 +1,5 @@
 const VK = require("vk-io");
-const Debug = require("#debug");
+const Debug = require("#utils/debug");
 
 module.exports = class VKApi{
 	
