@@ -6,7 +6,7 @@ module.exports = class NestedEntry extends Entry {
     constructor(nested) {
         super();
         this.nested = nested;
-
+        
         if (!Utils.isValid(nested))
             throw new Error("Argument is not valid!");
     }

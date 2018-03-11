@@ -27,11 +27,14 @@
       "booru": "/^booru:([\\w\\.]+)$/i",
       "limit": [ "/^count:([0-9]{1,2})$/i", "/^limit:([0-9]{1,2})$/i" ],
       "any": [ "any", "*" ],
-      "repeat": [ "repeat" ]
+      "repeat": [ "repeat", "0", ">.<" ]
     },
 
     "functional_tags": {
-      "booru": "source/search/functionals/booru.js"
+      "booru": "source/search/functionals/booru.js",
+	  "limit": "source/search/functionals/limit.js",
+	  "any": "source/search/functionals/any.js",
+	  "repeat": "source/search/functionals/repeat.js"
     }
   }
 }

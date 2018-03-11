@@ -14,7 +14,7 @@ const Utils       = require("#utils/utils");
 const Config      = require("#config/config");
 const ValueEntry  = require("#config/entries/value_entry");
 const JoinedEntry = require("#config/entries/joined_entry");
-const L18n        = require("#config/l18n");
+const I18n        = require("#config/i18n");
 const Statistics  = require("#config/stats");
 const BooruSearch = require("#search/booru_search");
 const ReferenceResolver = require("#utils/reference_resolver");
@@ -40,8 +40,8 @@ module.exports = class Main {
             functional_tags: new JoinedEntry({})
         }));
 
-        var l18n_name = this.config.retrieve("locale_file", "string");
-        this.localization = Utils.isValid(l18n_name) ? new L18n(l18n_name, "utf8") : new L18n.Null();
+        var i18n_name = this.config.retrieve("locale_file", "string");
+        this.localization = Utils.isValid(i18n_name) ? new I18n(i18n_name, "utf8") : new I18n.Null();
 
         var stats_name = this.config.retrieve("stats_file", "string");
         this.stats = Utils.isValid(stats_name) ? new Statistics(stats_name, "utf8") : new Statistics.Null();
