@@ -15,7 +15,7 @@
     "separators": [ " ", ";", ",", "|", "+" ],
     "default_tags": [],
     "default_booru": "safebooru",
-
+    
     "aliases": {
       "rating:safe": [ "safe" ],
       "rating:questionable": [ "questionable" ],
