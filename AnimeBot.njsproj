@@ -17,6 +17,28 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Compile Include="core\config\config.js" />
+    <Compile Include="core\config\entries\entry.js" />
+    <Compile Include="core\config\entries\joined_entry.js" />
+    <Compile Include="core\config\entries\nested_entry.js" />
+    <Compile Include="core\config\entries\sampled_entry.js" />
+    <Compile Include="core\config\entries\value_entry.js" />
+    <Compile Include="core\config\i18n.js" />
+    <Compile Include="core\config\loadable.js" />
+    <Compile Include="core\config\stats.js" />
+    <Compile Include="core\index.js" />
+    <Compile Include="core\interfaces\interface.js" />
+    <Compile Include="core\interfaces\processor.js" />
+    <Compile Include="core\interfaces\vk\api.js" />
+    <Compile Include="core\interfaces\vk\interface.js" />
+    <Compile Include="core\interfaces\vk\processors\message.js" />
+    <Compile Include="core\interfaces\vk\processors\subscribe.js" />
+    <Compile Include="core\search\booru_search.js" />
+    <Compile Include="core\search\functionals\functional_tag.js" />
+    <Compile Include="core\utils\debug.js" />
+    <Compile Include="core\utils\dictionary.js" />
+    <Compile Include="core\utils\reference_resolver.js" />
+    <Compile Include="core\utils\utils.js" />
     <Compile Include="source\config\entries\entry.js">
       <SubType>Code</SubType>
     </Compile>
@@ -78,6 +100,15 @@
   <ItemGroup>
     <Folder Include="AnimeBot" />
     <Folder Include="AnimeBot\AnimeBot" />
+    <Folder Include="core\" />
+    <Folder Include="core\config\" />
+    <Folder Include="core\config\entries\" />
+    <Folder Include="core\interfaces\" />
+    <Folder Include="core\interfaces\vk\" />
+    <Folder Include="core\interfaces\vk\processors\" />
+    <Folder Include="core\search\" />
+    <Folder Include="core\search\functionals\" />
+    <Folder Include="core\utils\" />
     <Folder Include="source\config\" />
     <Folder Include="source\config\entries\" />
     <Folder Include="source\interfaces\" />
