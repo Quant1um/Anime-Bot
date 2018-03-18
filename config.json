@@ -14,7 +14,7 @@
   "booru_search": {
     "separators": [ " ", ";", ",", "|", "+" ],
     "default_tags": [],
-    "default_booru": "kc",
+    "default_booru": "yandere",
 
     "aliases": {
       "rating:safe": [ "safe" ],
