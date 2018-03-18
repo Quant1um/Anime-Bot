@@ -14,7 +14,7 @@
   "booru_search": {
     "separators": [ " ", ";", ",", "|", "+" ],
     "default_tags": [],
-    "default_booru": "danbooru",
+    "default_booru": "kc",
 
     "aliases": {
       "rating:safe": [ "safe" ],
