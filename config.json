@@ -14,7 +14,7 @@
   "booru_search": {
     "separators": [ " ", ";", ",", "|", "+" ],
     "default_tags": [],
-    "default_booru": "safebooru",
+    "default_booru": "danbooru",
 
     "aliases": {
       "rating:safe": [ "safe" ],
