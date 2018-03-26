@@ -1,5 +1,3 @@
-﻿const Utils = require("#utils/utils");
-
 module.exports = class Dictionary {
 
     constructor(table) {
@@ -7,7 +5,7 @@ module.exports = class Dictionary {
         this.dynamic = [];
         this.missing_cache = {};
 
-        if (Utils.isValid(table))
+        if (defined(table))
             this.add(table);
     }
 
@@ -17,13 +15,13 @@ module.exports = class Dictionary {
             let value = table[key];
 
             let regexp = Dictionary.createRegexp(key);
-            if (Utils.isValid(regexp)) {
+            if (defined(regexp)) {
                 this.dynamic.push({
                     regexp: regexp,
                     value: value
                 });
             } else {
-                if (Utils.isValid(this.static[key]))
+                if (defined(this.static[key]))
                     throw new Error("Already in table!");
                 this.static[key] = value;
             }
@@ -33,16 +31,16 @@ module.exports = class Dictionary {
     }
 
     get(key) {
-        if (!Utils.isValid(key) || this.missing_cache[key])
+        if (!defined(key) || this.missing_cache[key])
             return null;
 
         let static_value = this.static[key];
-        if (Utils.isValid(static_value))
+        if (defined(static_value))
             return static_value;
 
         for (let dyn of this.dynamic) {
             var args = dyn.regexp.exec(key);
-            if (Utils.isValid(args) && args.length > 0)
+            if (defined(args) && args.length > 0)
                 return Utils.format(dyn.value, args.slice(1));
         }
 

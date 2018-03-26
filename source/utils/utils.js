@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 const Path = require("path");
 const FORMAT_ARG_REGEX = /{(\d+)}/g;
@@ -6,26 +6,17 @@ const FORMAT_ARG_REGEX = /{(\d+)}/g;
 module.exports = class Utils {
 
     /**
-     * Returns true if, and only if, given value is undefined or null.
-     * @param {any} value Given value
-     * @returns {boolean} True, if, and only if, given value is undefined or null, otherwise false.
-     */
-    static isValid(value) {
-        return typeof value !== "undefined" && value !== null;
-    }
-
-    /**
      * Like String.prototype.split(string) but accepts array of delimitiers, instead of single delimitiers.
-     * Node: Each delimitier must has length of 1, otherwise that delimities will be ignored!
+     * Node: Each delimitier must has length of 1, demilimiers that has length different from 1 will be ignored!
      * @param {string} string Splittable string
      * @param {string[]} delimiters Array of delimitiers
      * @returns {string[]} Array of string that splittable one contains and separated using given array of delimitiers.
      */
     static splitString(string, delimiters) {
         if (typeof string !== "string")
-            throw new Error("Argument error: string expected as first argument!");
+            throw new Error("Argument error: first argument expected to be string!");
         if (!Array.isArray(delimiters))
-            throw new Error("Argument error: array expected as second argument!");
+            throw new Error("Argument error: second argument expected to be array!");
 
         var result = [];
         var temp = "";
@@ -61,17 +52,17 @@ module.exports = class Utils {
             return {};
 
         var inverse = {};
-        for(let key in input){
+        for (let key in input) {
             let obj = input[key];
             if (Array.isArray(obj)) {
                 for (let value of obj) {
-                    if (Utils.isValid(inverse[value]))
+                    if (defined(inverse[value]))
                         throw new Error("Dublication at value \"" + value + "\" of key \"" + key + "\".");
                     else
                         inverse[value] = key;
                 }
-            } else if (Utils.isValid(obj)) {
-                if (Utils.isValid(inverse[obj]))
+            } else if (defined(obj)) {
+                if (defined(inverse[obj]))
                     throw new Error("Dublication at value \"" + obj + "\" of key \"" + key + "\".");
                 else
                     inverse[obj] = key;
@@ -90,21 +81,50 @@ module.exports = class Utils {
      */
     static format(format, args) {
         if (typeof format !== "string")
-            throw new Error("Argument error: string expected as first argument!");
+            throw new Error("Argument error: first argument expected to be string!");
 
         return format.replace(FORMAT_ARG_REGEX, (match, key) =>
             typeof args[key] !== 'undefined' ? args[key] : match);
     }
 
     /**
-     * Resolves path relative to current working directory
-     * @param {string} path Path, relative to current working directory
+     * Resolves path relative to "source" directory
+     * @param {string} path Path, relative to "source" directory
      * @returns {string} Absolute path that refers to same file/direction as given path.
      */
     static resolvePath(path) {
         if (typeof path !== "string")
-            throw new Error("Argument error: string expected as first argument!");
+            throw new Error("Argument error: first argument expected to be string!");
 
-        return Path.resolve(process.cwd(), path);
+        return Path.resolve(PROJECT_ROOT, path);
+    }
+
+    static type(value) {
+        if (value === null)
+            return "null";
+        if (Array.isArray(value))
+            return "array";
+        return typeof value;
+    }
+
+    static convert(type, value) {
+        if (!defined(value))
+            return null;
+
+        var ctype = Utils.type(value);
+        if (type === ctype)
+            return value;
+
+        switch (type) {
+            case "string": return value.toString();
+            case "number": return +value;
+            case "boolean": return !!value;
+            case "symbol": return Symbol(value);
+            case "null": return null;
+            case "undefined": return;
+            case "array": return [value];
+        }
+
+        throw new Error("Cannot convert from " + ctype + " to " + type + "!");
     }
 };

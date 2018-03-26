@@ -17,107 +17,55 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <Compile Include="core\config\config.js" />
-    <Compile Include="core\config\entries\entry.js" />
-    <Compile Include="core\config\entries\joined_entry.js" />
-    <Compile Include="core\config\entries\nested_entry.js" />
-    <Compile Include="core\config\entries\sampled_entry.js" />
-    <Compile Include="core\config\entries\value_entry.js" />
-    <Compile Include="core\config\i18n.js" />
-    <Compile Include="core\config\loadable.js" />
-    <Compile Include="core\config\stats.js" />
-    <Compile Include="core\index.js" />
-    <Compile Include="core\interfaces\interface.js" />
-    <Compile Include="core\interfaces\processor.js" />
-    <Compile Include="core\interfaces\vk\api.js" />
-    <Compile Include="core\interfaces\vk\interface.js" />
-    <Compile Include="core\interfaces\vk\processors\message.js" />
-    <Compile Include="core\interfaces\vk\processors\subscribe.js" />
-    <Compile Include="core\search\booru_search.js" />
-    <Compile Include="core\search\functionals\functional_tag.js" />
-    <Compile Include="core\utils\debug.js" />
-    <Compile Include="core\utils\dictionary.js" />
-    <Compile Include="core\utils\reference_resolver.js" />
-    <Compile Include="core\utils\utils.js" />
-    <Compile Include="source\config\entries\entry.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\config\entries\joined_entry.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\config\entries\nested_entry.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\config\entries\value_entry.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\config\l18n.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\config\loadable.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\config\stats.js" />
-    <Compile Include="source\utils\debug.js" />
-    <Compile Include="source\search\booru_search.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\interfaces\processor.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\search\functionals\functional_tag.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\utils\dictionary.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\utils\reference_resolver.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\utils\utils.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Content Include="config.json" />
-    <Content Include="config_debug.json" />
-    <Content Include="locale.json">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="package-lock.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Compile Include="source\interfaces\vk\api.js" />
-    <Compile Include="source\index.js" />
-    <Compile Include="source\interfaces\interface.js">
+    <Content Include="source\config.json">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\interfaces\vk\interface.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\config\config.js" />
-    <Compile Include="source\interfaces\vk\processors\subscribe.js" />
-    <Compile Include="source\interfaces\vk\processors\message.js" />
+    </Content>
+    <Content Include="source\utils\reference_resolver.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AnimeBot" />
     <Folder Include="AnimeBot\AnimeBot" />
-    <Folder Include="core\" />
-    <Folder Include="core\config\" />
-    <Folder Include="core\config\entries\" />
-    <Folder Include="core\interfaces\" />
-    <Folder Include="core\interfaces\vk\" />
-    <Folder Include="core\interfaces\vk\processors\" />
-    <Folder Include="core\search\" />
-    <Folder Include="core\search\functionals\" />
-    <Folder Include="core\utils\" />
-    <Folder Include="source\config\" />
-    <Folder Include="source\config\entries\" />
-    <Folder Include="source\interfaces\" />
-    <Folder Include="source\interfaces\vk\" />
     <Folder Include="source\" />
-    <Folder Include="source\interfaces\vk\processors\" />
+    <Folder Include="source\core\" />
+    <Folder Include="source\core\config\" />
+    <Folder Include="source\core\commands\" />
+    <Folder Include="source\core\events\" />
+    <Folder Include="source\core\searcher\" />
+    <Folder Include="source\handlers\" />
+    <Folder Include="source\commands\" />
+    <Folder Include="source\functionals\" />
     <Folder Include="source\utils\" />
-    <Folder Include="source\search\" />
-    <Folder Include="source\search\functionals\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="source\commands\example.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="source\core\bootstrap.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="source\core\commands\command.js" />
+    <Compile Include="source\core\commands\command_handler.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="source\core\config\config.js" />
+    <Compile Include="source\core\config\loadable.js" />
+    <Compile Include="source\core\config\stats.js" />
+    <Compile Include="source\core\events\event_bridge.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="source\core\events\event_handler.js" />
+    <Compile Include="source\core\listener.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="source\core\searcher\functional_tag.js" />
+    <Compile Include="source\easy.js" />
+    <Compile Include="source\index.js" />
+    <Compile Include="source\utils\debug.js" />
+    <Compile Include="source\utils\dictionary.js" />
+    <Compile Include="source\utils\utils.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->

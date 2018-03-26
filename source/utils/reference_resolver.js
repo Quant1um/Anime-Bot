@@ -1,16 +1,14 @@
-﻿const Utils = require("#utils/utils");
-
 module.exports = class ReferenceResolver {
 
     constructor(target) {
         this.target = target;
 
-        if (!Utils.isValid(target))
+        if (!defined(target))
             throw new Error("Target is not valid!");
     }
 
     get(reference) {
-        if (!Utils.isValid(reference))
+        if (!defined(reference))
             return null;
 
         var splitted = Utils.splitString(reference, ["."]);
@@ -20,7 +18,7 @@ module.exports = class ReferenceResolver {
         var object = this.target;
         for (let ref of splitted) {
             object = object[ref];
-            if (!Utils.isValid(object))
+            if (!defined(object))
                 return null;
         }
 
@@ -28,8 +26,11 @@ module.exports = class ReferenceResolver {
     }
 
     modify(reference, modificator) {
-        if (!Utils.isValid(reference))
+        if (!defined(reference))
             return null;
+
+        if (Object.isFrozen(this.target))
+            throw new Error("Target object is frozen!");
 
         var splitted = Utils.splitString(reference, ["."]);
         if (!splitted.length)
@@ -38,7 +39,7 @@ module.exports = class ReferenceResolver {
         var parent = null;
         var object = this.target;
         for (let i = 0; i < splitted.length; i++) {
-            if (!Utils.isValid(object))
+            if (!defined(object))
                 parent[splitted[i - 1]] = object = {};
             parent = object;
             object = parent[splitted[i]];
