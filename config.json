@@ -3,7 +3,7 @@
   "connection": {
     "__comment": "#{name} means that value will be taken from environment variables.",
     "port": "#PORT",
-    "tls": true
+    "tls": false
   },
   "vk": {
     "accessToken": "#ACCESS_TOKEN",
