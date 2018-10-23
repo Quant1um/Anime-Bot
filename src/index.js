@@ -15,7 +15,6 @@ let listener = new Listener((context) => eventBridge.pushEvent([context.type, ..
 });
 
 eventBridge.addHandler("message", (context) => {
-    console.log(context);
     function handleError(err) {
         if (err.name === "BooruError") {
             context.reply("Error was occurred:\n" + err.message);
@@ -27,7 +26,6 @@ eventBridge.addHandler("message", (context) => {
 
     if (context.hasText) {
         context.setActivity();
-        console.log("context.hasText");
 
         let tags = context.text.trim().split(/\s+/) || [];
         booru.fetch(tags).then((images) => {

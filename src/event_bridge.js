@@ -10,8 +10,6 @@
     }
 
     pushEvent(event, ...args) {
-        console.log(event);
-
         if (Array.isArray(event)) {
             for (let e of event) {
                 this.pushEvent(e, ...args);
