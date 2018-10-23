@@ -6,7 +6,7 @@ class Listener {
         this.handler = handler;
 
         this.port = options.port || 8000;
-        this.tls = options.tls || true;
+        this.tls = options.tls || false;
 
         this.api = new VK.VK({
             token: options.accessToken,
@@ -15,8 +15,6 @@ class Listener {
             webhookPath: "/",
             apiMode: "parallel_selected"
         });
-
-        console.log(options);
     }
 
     start() {
