@@ -26,7 +26,7 @@ class Config {
             throw new Exception("Config isn't loaded!");
         let result = _.get(this.data, path);
         if (typeof result === "string" && result[0] === "#")
-            return process.env[result.substr(0, 1)];
+            return process.env[result.substr(1)];
         return result;
     }
 }
