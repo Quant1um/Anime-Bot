@@ -15,6 +15,8 @@ class Listener {
             webhookPath: "/",
             apiMode: "parallel_selected"
         });
+
+        console.log(options);
     }
 
     start() {
