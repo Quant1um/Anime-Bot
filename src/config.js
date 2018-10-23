@@ -1,6 +1,5 @@
 ﻿const Filesystem = require("fs");
 const _ = require("lodash");
-const typeCheck = require("./typecheck");
 
 class Config {
 
