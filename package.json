@@ -1,6 +1,6 @@
 {
   "name": "animebot",
-  "version": "0.0.1",
+  "version": "0.1",
   "description": "Anime Bot which parses anime images from any booru and send it to end user",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,8 @@
   },
   "homepage": "https://github.com/Quant1um/Anime-Bot#readme",
   "dependencies": {
-    "booru": "^0.4.0",
-    "vk-io": "^4.0.0-alpha.10"
+    "booru": "^1.3.3",
+    "npm": "^6.4.1",
+    "vk-io": "^4.0.0-rc.7"
   }
 }

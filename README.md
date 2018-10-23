@@ -1,2 +1,2 @@
 # Anime-Bot
-Anime Bot hosted on Heroku and uses VK social network as interface
+Anime Bot is a VK bot for retrieving images from booru
