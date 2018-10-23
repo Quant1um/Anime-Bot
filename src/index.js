@@ -6,7 +6,7 @@ const Listener = require("./listener");
 let config = new Config("config.json", "utf8");
 let booru = new BooruFetcher(config.get("booru"));
 let eventBridge = new EventBridge();
-let listener = new Listener((...args) => eventBridge.pushEvent([context.type, ...context.subTypes], ...args), {
+let listener = new Listener((context) => eventBridge.pushEvent([context.type, ...context.subTypes], context), {
     accessToken: config.get("vk.accessToken"),
     secretKey: config.get("vk.secretKey"),
     confirmationCode: config.get("vk.confirmationCode"),
