@@ -26,6 +26,7 @@ class Listener {
             await next();
         });
 
+        console.log("Listening at port " + this.port + "...");
         this.api.updates.startWebhook({
             port: this.port,
             tls: this.tls

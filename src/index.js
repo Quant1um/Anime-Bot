@@ -40,7 +40,6 @@ eventBridge.addHandler(["message"], (context) => {
 });
 
 listener.start();
-console.log("Listening...");
 
 /* test code
  * eventBridge.pushEvent("message", {
