@@ -14,7 +14,7 @@ let listener = new Listener((context) => eventBridge.pushEvent([context.type, ..
     tls: config.get("connection.tls")
 });
 
-eventBridge.addHandler(["message"], (context) => {
+eventBridge.addHandler("message", (context) => {
     function handleError(err) {
         if (err.name === "BooruError") {
             context.reply("Error was occurred:\n" + err.message);

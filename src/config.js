@@ -1,11 +1,12 @@
 ﻿const Filesystem = require("fs");
 const _ = require("lodash");
+const typeCheck = require("./typecheck");
 
 class Config {
 
     constructor(path, encoding) {
         this.path = path;
-        this.encoding = encoding;
+        this.encoding = encoding || "utf8";
 
         this.load();
     }
