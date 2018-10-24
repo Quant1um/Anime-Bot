@@ -5,6 +5,11 @@
     "port": "#PORT",
     "tls": false
   },
+  "database": {
+    "filename": "database.json",
+    "verbose": false,
+    "autosaveInterval": 4000
+  },
   "vk": {
     "accessToken": "#ACCESS_TOKEN",
     "confirmationCode": "#CONFIRMATION_CODE",

@@ -30,6 +30,7 @@
   "dependencies": {
     "booru": "^1.3.3",
     "lodash": "^4.17.11",
+    "lokijs": "^1.5.5",
     "npm": "^6.4.1",
     "vk-io": "^4.0.0-rc.7"
   }
