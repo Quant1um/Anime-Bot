@@ -14,35 +14,32 @@ let listener = new Listener((context) => eventBridge.pushEvent([context.type, ..
     tls: config.get("connection.tls")
 });
 
-eventBridge.addHandler("message", (context) => {
+eventBridge.addHandler("text", (context) => {
     function handleError(err) {
-        if (err.name === "BooruError") {
-            context.reply("Error was occurred:\n" + err.message);
-        } else {
-            console.error(err);
-            context.reply("Internal error was occurred:\n" + err.toString());
-        }
+        console.error(err);
+        context.reply("Internal error was occurred:\n" + err.toString());
     }
 
-    if (context.hasText) {
-        context.setActivity();
+    context.setActivity();
 
-        let tags = context.text.trim().split(/\s+/) || [];
-        booru.fetch(tags).then((images) => {
-            if (images instanceof Error) {
-                handleError(images);
-            } else {
+    let tags = context.text.trim().split(/\s+/) || [];
+    booru.fetch(tags).then((images) => {
+        if (images instanceof Error) {
+            handleError(images);
+        } else {
+            if (images.length) {
                 for (let image of images)
                     context.sendPhoto(image.common.file_url);
+            } else {
+                context.reply("No images by requested tags are found!");
             }
-        }).catch(handleError);
-    }
+        }
+    }).catch(handleError);
 });
 
 listener.start();
 
-/* test code
- * eventBridge.pushEvent("message", {
+ eventBridge.pushEvent("text", {
     hasText: true,
     text: "maid",
 
@@ -55,4 +52,4 @@ listener.start();
     sendPhoto: function (photo) {
         console.log("sendPhoto(" + photo + ")");
     }
-}); */
+}); 
