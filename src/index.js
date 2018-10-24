@@ -37,10 +37,9 @@ Promise.resolve()
                     handleError(context, images);
                 } else {
                     if (images.length) {
-                        for (let image of images)
-                            context.sendPhoto(image.common.file_url);
+                        context.sendPhoto(images.map((image) => image.common.file_url));
                     } else {
-                        context.reply("No images by requested tags are found!");
+                        context.reply("No images are found!");
                     }
                 }
             }).catch((error) => handleError(context, error));
