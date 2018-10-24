@@ -4,8 +4,9 @@
     }
 
     addHandler(event, handler) {
-        if (!this.handlers[event])
+        if (!this.handlers[event]) {
             this.handlers[event] = [];
+        }
         this.handlers[event].push(handler);
     }
 

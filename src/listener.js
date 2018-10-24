@@ -18,8 +18,9 @@ class Listener {
     }
 
     start() {
-        if (this.started)
+        if (this.started) {
             throw new Error("Listener already started!");
+        }
 
         this.api.updates.use(async (context, next) => {
             this.handler(context);

@@ -1,5 +1,6 @@
 node_modules
 config_debug.json
+*.suo
 
 bin/
 obj/
