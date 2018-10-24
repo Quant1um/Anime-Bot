@@ -37,7 +37,8 @@ Promise.resolve()
                     handleError(context, images);
                 } else {
                     if (images.length) {
-                        context.sendPhoto(images.map((image) => image.common.file_url));
+                        images.map((image) => console.dir(image.common))
+                        //context.sendPhoto(images.map((image) => image.common.file_url));
                     } else {
                         context.reply("No images are found!");
                     }
