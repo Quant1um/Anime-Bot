@@ -11,18 +11,16 @@
     }
 
     pushEvent(event, ...args) {
-        if (Array.isArray(event)) {
-            for (let e of event) {
-                this.pushEvent(e, ...args);
-            }
-        } else if (typeof event === "string") {
-            if (this.handlers[event]) {
-                for (let handler of this.handlers[event]) {
+        if (!Array.isArray(event)) {
+            event = [event];
+        }
+
+        for (let e of event) {
+            if (this.handlers[e]) {
+                for (let handler of this.handlers[e]) {
                     handler(...args);
                 }
             }
-        } else {
-            throw new Error("Invalid event type (got " + typeof event + ", array or string expected)");
         }
     }
 }
