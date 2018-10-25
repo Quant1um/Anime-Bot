@@ -30,6 +30,36 @@ Promise.resolve()
         let buttonMore = config.get("text.buttons.more", "text.buttons.more");
         let buttonBatch = config.get("text.buttons.batch", "text.buttons.batch");
 
+        function buildKeyboard(tags) {
+            return Keyboard.keyboard([[
+                Keyboard.textButton({
+                    label: buttonMore,
+                    payload: { tags },
+                    color: Keyboard.PRIMARY_COLOR
+                }),
+                Keyboard.textButton({
+                    label: buttonBatch,
+                    payload: { tags, count: 5 },
+                    color: Keyboard.DEFAULT_COLOR
+                })
+            ]]);
+        }
+
+        function sendBooruImages(tags = [], count = 1) {
+            booru.fetch(tags, count).then((images) => {
+                if (images.length) {
+                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
+                        keyboard: buildKeyboard(tags)
+                    });
+                } else {
+                    context.reply(messageNoImages);
+                }
+            }).catch((error) => {
+                console.error(error);
+                context.reply(messageError);
+            });
+        } 
+
         eventBridge.addHandler("text", (context) => {
             context.setActivity();
 
@@ -42,29 +72,7 @@ Promise.resolve()
                 tags = context.text.trim().split(/\s+/);
             }
  
-            booru.fetch(tags || [], count || 1).then((images) => {
-                if (images.length) {
-                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
-                        keyboard: Keyboard.keyboard([[
-                            Keyboard.textButton({
-                                label: buttonMore,
-                                payload: { tags },
-                                color: Keyboard.PRIMARY_COLOR
-                            }),
-                            Keyboard.textButton({
-                                label: buttonBatch,
-                                payload: { tags, count: 5 },
-                                color: Keyboard.DEFAULT_COLOR
-                            })
-                        ]])
-                    });
-                } else {
-                    context.reply(messageNoImages);
-                }
-            }).catch((error) => {
-                console.error(error);
-                context.reply(messageError);
-            });
+            sendBooruImages(tags, count);
         });
     })
     .then(listener.start()) // start listener
