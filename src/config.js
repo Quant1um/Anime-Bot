@@ -3,9 +3,9 @@ const _ = require("lodash");
 
 class Config {
 
-    constructor(path, encoding) {
+    constructor(path, encoding = "utf8") {
         this.path = path;
-        this.encoding = encoding || "utf8";
+        this.encoding = encoding;
 
         this.load();
     }

@@ -6,10 +6,7 @@ class BooruFetcher {
         this.defaultBooru = defaultBooru;
     }
 
-    fetch(tags, limit, booru) {
-        booru = booru || this.defaultBooru;
-        limit = limit || 1;
-        
+    fetch(tags = [], limit = 1, booru = this.defaultBooru) {
         return Booru.search(booru, tags, { limit, random: true }).then((result) => {
             if (result instanceof Error) {
                 throw result;

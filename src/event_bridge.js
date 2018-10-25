@@ -18,7 +18,7 @@
         events.forEach((event) => {
             let handlers = this.handlers[event] || [];
             handlers.forEach((handler) => handler(...args));
-        })
+        });
     }
 }
 

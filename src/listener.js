@@ -2,16 +2,16 @@
 
 class Listener {
 
-    constructor(handler, options) {
+    constructor(handler, { port = 8000, tls = false, accessToken, secretKey, confirmationCode }) {
         this.handler = handler;
 
-        this.port = options.port || 8000;
-        this.tls = options.tls || false;
+        this.port = port;
+        this.tls = tls;
 
         this.api = new VK.VK({
-            token: options.accessToken,
-            webhookSecret: options.secretKey,
-            webhookConfirmation: options.confirmationCode,
+            token: accessToken,
+            webhookSecret: secretKey,
+            webhookConfirmation: confirmationCode,
             webhookPath: "/",
             apiMode: "parallel_selected"
         });
