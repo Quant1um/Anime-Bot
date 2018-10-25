@@ -45,7 +45,7 @@ Promise.resolve()
             ]]);
         }
 
-        function sendBooruImages(tags = [], count = 1) {
+        function sendBooruImages(context, tags = [], count = 1) {
             booru.fetch(tags, count).then((images) => {
                 if (images.length) {
                     context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
@@ -72,7 +72,7 @@ Promise.resolve()
                 tags = context.text.trim().split(/\s+/);
             }
  
-            sendBooruImages(tags, count);
+            sendBooruImages(context, tags, count);
         });
     })
     .then(listener.start()) // start listener
