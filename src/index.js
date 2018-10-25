@@ -35,7 +35,7 @@ Promise.resolve()
             booru.fetch(tags).then((images) => {
                 if (images.length) {
                     context.sendPhoto(Array.from(images).map((image) => image.common.file_url));
-                    context.send(KeyboardKeyboard.keyboard([
+                    context.send(Keyboard.keyboard([
                         Keyboard.textButton({
                             label: buttonMore,
                             payload: { tags },
@@ -62,7 +62,6 @@ Promise.resolve()
     .then(() => console.log("Bot started up successfully!"))
     .then(() => { //test code
         eventBridge.pushEvent("text", {
-            hasText: true,
             text: "maid",
 
             setActivity: function () {
@@ -73,6 +72,9 @@ Promise.resolve()
             },
             sendPhoto: function (photo) {
                 console.log("sendPhoto(" + photo + ")");
+            },
+            send: function (data) {
+                console.log("send(" + data + ")");
             }
         });
     })
