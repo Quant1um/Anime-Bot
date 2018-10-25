@@ -21,7 +21,8 @@ class DatabaseManager {
                 autoloadCallback: resolve,
                 autosave: true,
                 autosaveInterval: this.autosaveInterval,
-                verbose: this.verbose
+                verbose: this.verbose,
+                env: "NODEJS"
             });
         });
     }

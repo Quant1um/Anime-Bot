@@ -1,18 +1,22 @@
 {
   "booru": "safebooru",
-  "connection": {
+  "listening": {
     "__comment": "#{name} means that value will be taken from environment variables.",
     "port": "#PORT",
+    "confirmationCode": "#CONFIRMATION_CODE",
+    "secretKey": "#SECRET_KEY",
     "tls": false
   },
+  "vk": {
+    "accessToken": "#ACCESS_TOKEN"
+  },
+  "messages": {
+    "noImages": "No images are found!",
+    "error": "An error has been occurred. Please report this @quant1um"
+  },
   "database": {
-    "filename": "database.json",
+    "filename": "database/database.json",
     "verbose": false,
     "autosaveInterval": 4000
-  },
-  "vk": {
-    "accessToken": "#ACCESS_TOKEN",
-    "confirmationCode": "#CONFIRMATION_CODE",
-    "secretKey": "#SECRET_KEY"
   }
 }

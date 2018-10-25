@@ -23,12 +23,12 @@ class Config {
         this.data = data;
     }
 
-    get(path) {
+    get(path, def) {
         if (!this.data) {
             throw new Error("Config isn't loaded!");
         }
 
-        let result = _.get(this.data, path);
+        let result = _.get(this.data, path, def);
         if (typeof result === "string" && result[0] === "#") {
             return process.env[result.substr(1)];
         }

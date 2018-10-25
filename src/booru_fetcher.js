@@ -10,8 +10,13 @@ class BooruFetcher {
         booru = booru || this.defaultBooru;
         limit = limit || 1;
         
-        return Booru.search(booru, tags, { limit, random: true })
-            .then(booru.commonfy);
+        return Booru.search(booru, tags, { limit, random: true }).then((result) => {
+            if (result instanceof Error) {
+                throw result;
+            }
+
+            return result;
+        });
     }
 }
 

@@ -5,49 +5,52 @@ const Listener = require("./listener");
 const DatabaseManager = require("./database");
 
 let config = new Config("config.json", "utf8");
+let booru = new BooruFetcher(config.get("booru"));
+let eventBridge = new EventBridge();
+let listener = new Listener((context) => eventBridge.pushEvent([context.type, ...context.subTypes], context), {
+    accessToken: config.get("vk.accessToken"),
+    secretKey: config.get("listening.secretKey"),
+    confirmationCode: config.get("listening.confirmationCode"),
+    port: config.get("listening.port"),
+    tls: config.get("listening.tls")
+});
 let database = new DatabaseManager({
     filename: config.get("database.filename"),
     autosaveInterval: config.get("database.autosaveInterval"),
     verbose: config.get("database.verbose")
 });
-let booru = new BooruFetcher(config.get("booru"));
-let eventBridge = new EventBridge();
-let listener = new Listener((context) => eventBridge.pushEvent([context.type, ...context.subTypes], context), {
-    accessToken: config.get("vk.accessToken"),
-    secretKey: config.get("vk.secretKey"),
-    confirmationCode: config.get("vk.confirmationCode"),
-    port: config.get("connection.port"),
-    tls: config.get("connection.tls")
-});
 
 Promise.resolve()
     .then(database.load()) // load database
+    .then(() => { //database bindings
+        database.add("userdata", {
+            unique: ["id"],
+            autoupdate: true
+        });
+    })
     .then(() => { // bot logic
-        function handleError(context, err) {
-            console.error(err);
-            context.reply("Internal error was occurred:\n" + err.toString());
+        let messageNoImages = config.get("messages.noImages", "messages.noImages"); 
+        let messageError = config.get("messages.error", "messages.error");
+
+        function sendBooruImages(context, tags, count) {
+            context.setActivity();
+            booru.fetch(tags).then((images) => {
+                if (images.length) {
+                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url));
+                } else {
+                    context.reply(messageNoImages);
+                }
+            }).catch((error) => {
+                console.error(error);
+                context.reply(messageError);
+            });
         }
 
-        eventBridge.addHandler("text", (context) => {
-            context.setActivity();
-
-            let tags = context.text.trim().split(/\s+/) || [];
-            booru.fetch(tags).then((images) => {
-                if (images instanceof Error) {
-                    handleError(context, images);
-                } else {
-                    if (images.length) {
-                        context.sendPhoto(Array.from(images).map((image) => image.common.file_url));
-                    } else {
-                        context.reply("No images are found!");
-                    }
-                }
-            }).catch((error) => handleError(context, error));
-        });
+        eventBridge.addHandler("text", (context) => sendBooruImages(context, context.text.trim().split(/\s+/) || [], 1));
     })
     .then(listener.start()) // start listener
     .then(() => console.log("Bot started up successfully!"))
-    /*.then(() => { //test code
+    .then(() => { //test code
         eventBridge.pushEvent("text", {
             hasText: true,
             text: "maid",
@@ -62,7 +65,7 @@ Promise.resolve()
                 console.log("sendPhoto(" + photo + ")");
             }
         });
-    })*/
+    })
     .catch((error) => {
         console.error(error);
         throw error;
