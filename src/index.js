@@ -34,19 +34,20 @@ Promise.resolve()
             context.setActivity();
             booru.fetch(tags).then((images) => {
                 if (images.length) {
-                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url));
-                    context.send(Keyboard.keyboard([
-                        Keyboard.textButton({
-                            label: buttonMore,
-                            payload: { tags },
-                            color: Keyboard.PRIMARY_COLOR
-                        }),
-                        Keyboard.textButton({
-                            label: buttonBatch,
-                            payload: { tags, count: 10 },
-                            color: Keyboard.DEFAULT_COLOR
-                        })
-                    ]));
+                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
+                        keyboard: Keyboard.keyboard([
+                            Keyboard.textButton({
+                                label: buttonMore,
+                                payload: { tags },
+                                color: Keyboard.PRIMARY_COLOR
+                            }),
+                            Keyboard.textButton({
+                                label: buttonBatch,
+                                payload: { tags, count: 10 },
+                                color: Keyboard.DEFAULT_COLOR
+                            })
+                        ])
+                    });
                 } else {
                     context.reply(messageNoImages);
                 }
