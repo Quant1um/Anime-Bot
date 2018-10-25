@@ -11,7 +11,6 @@
     }
 
     pushEvent(events, ...args) {
-        console.log(events);
         if (!Array.isArray(events)) {
             events = [events];
         }

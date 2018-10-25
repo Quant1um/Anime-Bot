@@ -30,12 +30,22 @@ Promise.resolve()
         let buttonMore = config.get("text.buttons.more", "text.buttons.more");
         let buttonBatch = config.get("text.buttons.batch", "text.buttons.batch");
 
-        function sendBooruImages(context, tags, count) {
+        eventBridge.addHandler("text", (context) => {
             context.setActivity();
-            booru.fetch(tags).then((images) => {
+
+            let payload = context.messagePayload;
+            let tags, count;
+            if (payload) {
+                tags = payload.tags;
+                count = payload.count;
+            } else {
+                tags = context.text.trim().split(/\s+/);
+            }
+ 
+            booru.fetch(tags || [], count || 1).then((images) => {
                 if (images.length) {
                     context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
-                        keyboard: Keyboard.keyboard([
+                        keyboard: Keyboard.keyboard([[
                             Keyboard.textButton({
                                 label: buttonMore,
                                 payload: { tags },
@@ -46,7 +56,7 @@ Promise.resolve()
                                 payload: { tags, count: 10 },
                                 color: Keyboard.DEFAULT_COLOR
                             })
-                        ])
+                        ]])
                     });
                 } else {
                     context.reply(messageNoImages);
@@ -55,9 +65,7 @@ Promise.resolve()
                 console.error(error);
                 context.reply(messageError);
             });
-        }
-
-        eventBridge.addHandler("text", (context) => sendBooruImages(context, context.text.trim().split(/\s+/) || [], 1));
+        });
     })
     .then(listener.start()) // start listener
     .then(() => console.log("Bot started up successfully!"))
