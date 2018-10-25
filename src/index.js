@@ -77,7 +77,7 @@ Promise.resolve()
     })
     .then(listener.start()) // start listener
     .then(() => console.log("Bot started up successfully!"))
-    .then(() => { //test code
+    /*.then(() => { //test code
         eventBridge.pushEvent("text", {
             text: "maid",
 
@@ -94,7 +94,7 @@ Promise.resolve()
                 console.log("send(" + data + ")");
             }
         });
-    })
+    })*/
     .catch((error) => {
         console.error(error);
         throw error;
