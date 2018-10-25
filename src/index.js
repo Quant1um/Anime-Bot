@@ -1,4 +1,6 @@
-﻿const BooruFetcher = require("./booru_fetcher");
+﻿const Keyboard = require("vk-io").Keyboard;
+
+const BooruFetcher = require("./booru_fetcher");
 const EventBridge = require("./event_bridge");
 const Config = require("./config");
 const Listener = require("./listener");
@@ -22,21 +24,29 @@ let database = new DatabaseManager({
 
 Promise.resolve()
     .then(database.load()) // load database
-    .then(() => { //database bindings
-        database.add("userdata", {
-            unique: ["id"],
-            autoupdate: true
-        });
-    })
     .then(() => { // bot logic
-        let messageNoImages = config.get("messages.noImages", "messages.noImages"); 
-        let messageError = config.get("messages.error", "messages.error");
+        let messageNoImages = config.get("text.noImages", "text.noImages"); 
+        let messageError = config.get("text.error", "text.error");
+        let buttonMore = config.get("text.buttons.more", "text.buttons.more");
+        let buttonBatch = config.get("text.buttons.batch", "text.buttons.batch");
 
         function sendBooruImages(context, tags, count) {
             context.setActivity();
             booru.fetch(tags).then((images) => {
                 if (images.length) {
                     context.sendPhoto(Array.from(images).map((image) => image.common.file_url));
+                    context.send(KeyboardKeyboard.keyboard([
+                        Keyboard.textButton({
+                            label: buttonMore,
+                            payload: { tags },
+                            color: Keyboard.PRIMARY_COLOR
+                        }),
+                        Keyboard.textButton({
+                            label: buttonBatch,
+                            payload: { tags, count: 10 },
+                            color: Keyboard.DEFAULT_COLOR
+                        })
+                    ]));
                 } else {
                     context.reply(messageNoImages);
                 }

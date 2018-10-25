@@ -10,9 +10,14 @@
   "vk": {
     "accessToken": "#ACCESS_TOKEN"
   },
-  "messages": {
+  "text": {
     "noImages": "No images are found!",
-    "error": "An error has been occurred. Please report this @quant1um"
+    "error": "An error has been occurred. Please report this @quant1um",
+
+    "buttons": {
+      "more": "More",
+      "batch": "Batch"
+    }
   },
   "database": {
     "filename": "database/database.json",
