@@ -53,7 +53,7 @@ Promise.resolve()
                             }),
                             Keyboard.textButton({
                                 label: buttonBatch,
-                                payload: { tags, count: 10 },
+                                payload: { tags, count: 5 },
                                 color: Keyboard.DEFAULT_COLOR
                             })
                         ]])
