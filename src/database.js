@@ -10,8 +10,9 @@ class DatabaseManager {
     }
 
     load() {
-        if (this.loki)
+        if (this.loki) {
             throw new Error("Already loading/loaded!");
+        }
 
         return new Promise((resolve, reject) => {
             this.loki = new Loki(this.filename, {
@@ -26,22 +27,26 @@ class DatabaseManager {
     }
 
     get(name) {
-        if (!this.loki)
+        if (!this.loki) {
             throw new Error("Database isn't loaded yet!");
+        }
 
         let collection = this.loki.getCollection(name);
-        if (!collection)
+        if (!collection) {
             throw new Error("No collection with name '" + name + "' found!");
+        }
         return collection;
     }
 
     add(name, options) {
-        if (!this.loki)
+        if (!this.loki) {
             throw new Error("Database isn't loaded yet!");
+        }
 
         let collection = this.loki.getCollection(name);
-        if (collection)
+        if (collection) {
             throw new Error("Collection with name '" + name + "' already present!");
+        }
 
         this.loki.addCollection(name, options);
     }

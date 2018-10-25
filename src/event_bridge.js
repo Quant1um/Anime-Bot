@@ -10,18 +10,15 @@
         this.handlers[event].push(handler);
     }
 
-    pushEvent(event, ...args) {
-        if (!Array.isArray(event)) {
-            event = [event];
+    pushEvent(events, ...args) {
+        if (!Array.isArray(events)) {
+            events = [events];
         }
 
-        for (let e of event) {
-            if (this.handlers[e]) {
-                for (let handler of this.handlers[e]) {
-                    handler(...args);
-                }
-            }
-        }
+        events.forEach((event) => {
+            let handlers = this.handlers[event] || [];
+            handlers.forEach((handler) => handler(...args));
+        })
     }
 }
 
