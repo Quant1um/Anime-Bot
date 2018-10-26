@@ -1,5 +1,5 @@
 {
-  "booru": "safebooru",
+  "booru": "knet",
   "listening": {
     "__comment": "#{name} means that value will be taken from environment variables.",
     "port": "#PORT",
