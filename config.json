@@ -19,9 +19,8 @@
       "batch": "Batch"
     }
   },
-  "database": {
-    "filename": "database/database.json",
-    "verbose": false,
+  "stats": {
+    "filename": "stats.json",
     "autosaveInterval": 4000
   }
 }

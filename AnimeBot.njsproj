@@ -35,9 +35,6 @@
     </Compile>
     <Compile Include="src\booru_fetcher.js" />
     <Compile Include="src\config.js" />
-    <Compile Include="src\database.js">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="src\event_bridge.js" />
     <Compile Include="src\index.js" />
     <Compile Include="src\listener.js" />

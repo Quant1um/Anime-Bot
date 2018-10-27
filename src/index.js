@@ -4,7 +4,6 @@ const BooruFetcher = require("./booru_fetcher");
 const EventBridge = require("./event_bridge");
 const Config = require("./config");
 const Listener = require("./listener");
-const DatabaseManager = require("./database");
 
 let config = new Config("config.json", "utf8");
 let booru = new BooruFetcher(config.get("booru"));
@@ -16,14 +15,8 @@ let listener = new Listener((context) => eventBridge.pushEvent([context.type, ..
     port: config.get("listening.port"),
     tls: config.get("listening.tls")
 });
-let database = new DatabaseManager({
-    filename: config.get("database.filename"),
-    autosaveInterval: config.get("database.autosaveInterval"),
-    verbose: config.get("database.verbose")
-});
 
 Promise.resolve()
-    .then(database.load()) // load database
     .then(() => { // bot logic
         let messageNoImages = config.get("text.noImages", "text.noImages"); 
         let messageError = config.get("text.error", "text.error");
