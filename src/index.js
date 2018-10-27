@@ -6,7 +6,11 @@ const Config = require("./config");
 const Listener = require("./listener");
 
 let config = new Config("config.json", "utf8");
-let booru = new BooruFetcher(config.get("booru"));
+let booru = new BooruFetcher({
+    booru: config.get("booru.site"),
+    rating: config.get("booru.rating"),
+    ratingOverride: config.get("booru.ratingOverride")
+});
 let eventBridge = new EventBridge();
 let listener = new Listener((context) => eventBridge.pushEvent([context.type, ...context.subTypes], context), {
     accessToken: config.get("vk.accessToken"),
@@ -62,7 +66,7 @@ Promise.resolve()
                 tags = payload.tags;
                 count = payload.count;
             } else {
-                tags = context.text.trim().split(/\s+/);
+                tags = context.text;
             }
  
             sendBooruImages(context, tags, count);

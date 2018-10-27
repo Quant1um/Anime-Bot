@@ -1,5 +1,9 @@
 {
-  "booru": "knet",
+  "booru": {
+    "site": "knet",
+    "rating": "safe",
+    "ratingOverride": true
+  },
   "listening": {
     "__comment": "#{name} means that value will be taken from environment variables.",
     "port": "#PORT",
