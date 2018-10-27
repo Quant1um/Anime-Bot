@@ -40,7 +40,6 @@ class BooruFetcher {
             tags.push(RatingPrefix + this.rating);
         }
 
-        console.log(tags);
         return tags;
     }
 
