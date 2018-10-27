@@ -26,14 +26,15 @@ class BooruFetcher {
         }
 
         let wasOverridden = false;
-        if (this.ratingOverride) {
-            tags.forEach((tag, index, array) => {
-                if (tag.match(RatingRegexp)) {
-                    wasOverridden = true;
+        tags.forEach((tag, index, array) => {
+            if (tag.match(RatingRegexp)) {
+                if (!this.ratingOverride) {
                     array.splice(index, 1);
+                } else {
+                    wasOverridden = true;
                 }
-            });
-        }
+            }
+        });
 
         if (!wasOverridden) {
             tags.push(RatingPrefix + this.rating);
