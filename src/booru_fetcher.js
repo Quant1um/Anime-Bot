@@ -4,10 +4,17 @@ const RatingPrefix = "rating:";
 const RatingRegexp = /^rating:.+/;
 const TagTokenRegexp = /\s+/;
 
+const assert = (variable, message) => {
+    if (!variable) {
+        throw new Error(message);
+    }
+};
+
+
 class BooruFetcher {
 
     constructor({ booru, rating = null, ratingOverride = false }) {
-        if (!booru) throw new Error("Cannot create booru fetcher: no booru is supplied!");
+        assert(booru, "Cannot create booru fetcher: no booru is supplied!");
 
         this.booru = booru;
         this.rating = rating;

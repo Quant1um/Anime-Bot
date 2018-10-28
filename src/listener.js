@@ -1,13 +1,18 @@
 ﻿const VK = require("vk-io");
 
+const assert = (variable, message) => {
+    if (!variable) {
+        throw new Error(message);
+    }
+};
+
 class Listener {
 
     constructor(handler, { port = 8000, tls = false, path = "/", accessToken, secretKey, confirmationCode }) {
-        if (!handler) throw new Error("Internal error: cannot create listener: no handler is supplied!");
-
-        if (!accessToken) throw new Error("Cannot create listener: no access token is supplied!");
-        if (!secretKey) throw new Error("Cannot create listener: no secret key is supplied!");
-        if (!confirmationCode) throw new Error("Cannot create listener: no confirmation code is supplied!");
+        assert(handler, "Cannot create listener: no handler is supplied!");
+        assert(accessToken, "Cannot create listener: no access token is supplied!");
+        assert(secretKey, "Cannot create listener: no secret key is supplied!");
+        assert(confirmationCode, "Cannot create listener: no confirmation code is supplied!");
 
         this.handler = handler;
 

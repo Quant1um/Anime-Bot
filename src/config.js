@@ -2,9 +2,15 @@
 const _ = require("lodash");
 const readFile = Util.promisify(require("fs").readFile);
 
+const assert = (variable, message) => {
+    if (!variable) {
+        throw new Error(message);
+    }
+};
+
 class ConfigLoader {
     constructor(path, { encoding = "utf8" }) {
-        if (!path) throw new Error("Cannot create config loader: no path is supplied!");
+        assert(path, "Cannot create config loader: no path is supplied!");
 
         this.path = path;
         this.encoding = encoding;
