@@ -1,11 +1,15 @@
 ﻿const Keyboard = require("vk-io").Keyboard;
 
+const EventEmitter = require("events").EventEmitter;
 const BooruFetcher = require("./booru_fetcher");
-const EventBridge = require("./event_bridge");
 const Config = require("./config");
 const Listener = require("./listener");
 
-let config, booru, eventBridge, listener;
+let config, booru, eventBus, listener;
+
+//process.env.ACCESS_TOKEN = "a";
+//process.env.SECRET_KEY = "a";
+//process.env.CONFIRMATION_CODE = "a";
 
 Promise.resolve()
     .then(() => config = new Config("config.json", { encoding: "utf8" })) //instantiate config
@@ -16,8 +20,8 @@ Promise.resolve()
             rating: config.get("booru.rating"),
             ratingOverride: config.get("booru.ratingOverride")
         });
-        eventBridge = new EventBridge();
-        listener = new Listener((context) => eventBridge.pushEvent([context.type, ...context.subTypes], context), {
+        eventBus = new EventEmitter();
+        listener = new Listener((context) => [context.type, ...context.subTypes].forEach((event) => eventBus.emit(event, context)), {
             accessToken: config.get("vk.accessToken"),
             secretKey: config.get("listening.secretKey"),
             confirmationCode: config.get("listening.confirmationCode"),
@@ -52,10 +56,7 @@ Promise.resolve()
 
             booru.fetch(tags, count).then((images) => {
                 if (images.length) {
-                    context.sendPhoto(Array.from(images).map((image) => {
-                        console.log(image.common.file_url);
-                        return image.common.file_url;
-                    }), {
+                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
                         keyboard: buildKeyboard(tags)
                     });
                 } else {
@@ -67,7 +68,7 @@ Promise.resolve()
             });
         } 
 
-        eventBridge.addHandler("text", (context) => {
+        eventBus.on("text", (context) => {
             context.setActivity();
 
             let payload = context.messagePayload;
@@ -85,7 +86,7 @@ Promise.resolve()
     .then(() => listener.start()) //start listener
     .then(() => console.log("Bot started up successfully!"))
     /*.then(() => { //test code
-        eventBridge.pushEvent("text", {
+        eventBus.emit("text", {
             text: "maid",
 
             setActivity: function () {
