@@ -1,31 +1,53 @@
-﻿const Filesystem = require("fs");
+﻿const Util = require("util");
 const _ = require("lodash");
+const readFile = Util.promisify(require("fs").readFile);
 
-class Config {
+class ConfigLoader {
+    constructor(path, { encoding = "utf8" }) {
+        if (!path) throw new Error("Cannot create config loader: no path is supplied!");
 
-    constructor(path, encoding = "utf8") {
         this.path = path;
         this.encoding = encoding;
-
-        this.load();
     }
 
     load() {
-        if (!Filesystem.existsSync(this.path)) {
-            throw new Error("File '" + this.path + "' does not exist!");
-        }
+        return readFile(this.path, this.encoding)
+            .catch((err) => {
+                if (err.code === "ENOENT") {
+                    throw new Error("File '" + this.path + "' does not exist!");
+                }
 
-        let content = Filesystem.readFileSync(this.path, this.encoding);
-        let data = JSON.parse(content);
-        if (typeof data !== "object") {
-            throw new Error("Parsed config must be a JSON object!");
-        }
-        this.data = data;
+                throw err;
+            })
+            .then((content) => {
+                let data = JSON.parse(content);
+                if (typeof data !== "object") {
+                    throw new Error("Parsed config must be a JSON object!");
+                }
+
+                return data;
+            });
+    }
+}
+
+class Config {
+
+    constructor(path, { encoding = "utf8" }) {
+        this.loader = new ConfigLoader(path, { encoding });
     }
 
+    get loaded() {
+        return Boolean(this.data);
+    }
+
+    load() {
+        return this.loader.load()
+            .then((data) => this.data = data);
+    }
+    
     get(path, def) {
-        if (!this.data) {
-            throw new Error("Config isn't loaded!");
+        if (!this.loaded) {
+            throw new Error("Config isn't loaded yet!");
         }
 
         let result = _.get(this.data, path, def);

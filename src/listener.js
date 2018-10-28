@@ -2,7 +2,13 @@
 
 class Listener {
 
-    constructor(handler, { port = 8000, tls = false, accessToken, secretKey, confirmationCode }) {
+    constructor(handler, { port = 8000, tls = false, path = "/", accessToken, secretKey, confirmationCode }) {
+        if (!handler) throw new Error("Internal error: cannot create listener: no handler is supplied!");
+
+        if (!accessToken) throw new Error("Cannot create listener: no access token is supplied!");
+        if (!secretKey) throw new Error("Cannot create listener: no secret key is supplied!");
+        if (!confirmationCode) throw new Error("Cannot create listener: no confirmation code is supplied!");
+
         this.handler = handler;
 
         this.port = port;
@@ -12,7 +18,7 @@ class Listener {
             token: accessToken,
             webhookSecret: secretKey,
             webhookConfirmation: confirmationCode,
-            webhookPath: "/",
+            webhookPath: path,
             apiMode: "parallel_selected"
         });
     }

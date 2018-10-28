@@ -5,11 +5,11 @@
     "ratingOverride": true
   },
   "listening": {
-    "__comment": "#{name} means that value will be taken from environment variables.",
     "port": "#PORT",
     "confirmationCode": "#CONFIRMATION_CODE",
     "secretKey": "#SECRET_KEY",
-    "tls": false
+    "tls": false,
+    "path": "/"
   },
   "vk": {
     "accessToken": "#ACCESS_TOKEN"
@@ -22,9 +22,5 @@
       "more": "More",
       "batch": "Batch"
     }
-  },
-  "stats": {
-    "filename": "stats.json",
-    "autosaveInterval": 4000
   }
 }

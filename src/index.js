@@ -5,22 +5,27 @@ const EventBridge = require("./event_bridge");
 const Config = require("./config");
 const Listener = require("./listener");
 
-let config = new Config("config.json", "utf8");
-let booru = new BooruFetcher({
-    booru: config.get("booru.site"),
-    rating: config.get("booru.rating"),
-    ratingOverride: config.get("booru.ratingOverride")
-});
-let eventBridge = new EventBridge();
-let listener = new Listener((context) => eventBridge.pushEvent([context.type, ...context.subTypes], context), {
-    accessToken: config.get("vk.accessToken"),
-    secretKey: config.get("listening.secretKey"),
-    confirmationCode: config.get("listening.confirmationCode"),
-    port: config.get("listening.port"),
-    tls: config.get("listening.tls")
-});
+let config, booru, eventBridge, listener;
 
 Promise.resolve()
+    .then(() => config = new Config("config.json", { encoding: "utf8" })) //instantiate config
+    .then(() => config.load()) //load config
+    .then(() => { //instantiate modules
+        booru = new BooruFetcher({
+            booru: config.get("booru.site"),
+            rating: config.get("booru.rating"),
+            ratingOverride: config.get("booru.ratingOverride")
+        });
+        eventBridge = new EventBridge();
+        listener = new Listener((context) => eventBridge.pushEvent([context.type, ...context.subTypes], context), {
+            accessToken: config.get("vk.accessToken"),
+            secretKey: config.get("listening.secretKey"),
+            confirmationCode: config.get("listening.confirmationCode"),
+            port: config.get("listening.port"),
+            tls: config.get("listening.tls"),
+            path: config.get("listening.path")
+        });
+    })
     .then(() => { // bot logic
         let messageNoImages = config.get("text.noImages", "text.noImages"); 
         let messageError = config.get("text.error", "text.error");
@@ -43,6 +48,8 @@ Promise.resolve()
         }
 
         function sendBooruImages(context, tags = [], count = 1) {
+            if (count > 5) count = 5;
+
             booru.fetch(tags, count).then((images) => {
                 if (images.length) {
                     context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
@@ -68,11 +75,11 @@ Promise.resolve()
             } else {
                 tags = context.text;
             }
- 
+
             sendBooruImages(context, tags, count);
         });
     })
-    .then(listener.start()) // start listener
+    .then(() => listener.start()) //start listener
     .then(() => console.log("Bot started up successfully!"))
     /*.then(() => { //test code
         eventBridge.pushEvent("text", {
@@ -92,9 +99,9 @@ Promise.resolve()
             }
         });
     })*/
-    .catch((error) => {
+    .catch((error) => { //exception handler
         console.error(error);
-        throw error;
+        process.exit(-1);
     });
 
 

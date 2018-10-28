@@ -7,6 +7,8 @@ const TagTokenRegexp = /\s+/;
 class BooruFetcher {
 
     constructor({ booru, rating = null, ratingOverride = false }) {
+        if (!booru) throw new Error("Cannot create booru fetcher: no booru is supplied!");
+
         this.booru = booru;
         this.rating = rating;
         this.ratingOverride = ratingOverride;
