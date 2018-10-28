@@ -52,7 +52,10 @@ Promise.resolve()
 
             booru.fetch(tags, count).then((images) => {
                 if (images.length) {
-                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
+                    context.sendPhoto(Array.from(images).map((image) => {
+                        console.log(image.common.file_url);
+                        return image.common.file_url;
+                    }), {
                         keyboard: buildKeyboard(tags)
                     });
                 } else {
