@@ -1,18 +1,26 @@
 {
-  "booru": "safebooru",
-  "connection": {
-    "__comment": "#{name} means that value will be taken from environment variables.",
-    "port": "#PORT",
-    "tls": false
+  "booru": {
+    "site": "gelbooru",
+    "rating": "safe",
+    "ratingOverride": true
   },
-  "database": {
-    "filename": "database.json",
-    "verbose": false,
-    "autosaveInterval": 4000
+  "listening": {
+    "port": "#PORT",
+    "confirmationCode": "#CONFIRMATION_CODE",
+    "secretKey": "#SECRET_KEY",
+    "tls": false,
+    "path": "/"
   },
   "vk": {
-    "accessToken": "#ACCESS_TOKEN",
-    "confirmationCode": "#CONFIRMATION_CODE",
-    "secretKey": "#SECRET_KEY"
+    "accessToken": "#ACCESS_TOKEN"
+  },
+  "text": {
+    "noImages": "No images are found!",
+    "error": "An error has been occurred. Please report this @quant1um",
+
+    "buttons": {
+      "more": "More",
+      "batch": "Batch"
+    }
   }
 }

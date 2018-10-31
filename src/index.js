@@ -1,55 +1,92 @@
-﻿const BooruFetcher = require("./booru_fetcher");
-const EventBridge = require("./event_bridge");
+﻿const Keyboard = require("vk-io").Keyboard;
+
+const EventEmitter = require("events").EventEmitter;
+const BooruFetcher = require("./booru_fetcher");
 const Config = require("./config");
 const Listener = require("./listener");
-const DatabaseManager = require("./database");
 
-let config = new Config("config.json", "utf8");
-let database = new DatabaseManager({
-    filename: config.get("database.filename"),
-    autosaveInterval: config.get("database.autosaveInterval"),
-    verbose: config.get("database.verbose")
-});
-let booru = new BooruFetcher(config.get("booru"));
-let eventBridge = new EventBridge();
-let listener = new Listener((context) => eventBridge.pushEvent([context.type, ...context.subTypes], context), {
-    accessToken: config.get("vk.accessToken"),
-    secretKey: config.get("vk.secretKey"),
-    confirmationCode: config.get("vk.confirmationCode"),
-    port: config.get("connection.port"),
-    tls: config.get("connection.tls")
-});
+let config, booru, eventBus, listener;
+
+//process.env.ACCESS_TOKEN = "a";
+//process.env.SECRET_KEY = "a";
+//process.env.CONFIRMATION_CODE = "a";
 
 Promise.resolve()
-    .then(database.load()) // load database
-    .then(() => { // bot logic
-        function handleError(context, err) {
-            console.error(err);
-            context.reply("Internal error was occurred:\n" + err.toString());
-        }
-
-        eventBridge.addHandler("text", (context) => {
-            context.setActivity();
-
-            let tags = context.text.trim().split(/\s+/) || [];
-            booru.fetch(tags).then((images) => {
-                if (images instanceof Error) {
-                    handleError(context, images);
-                } else {
-                    if (images.length) {
-                        context.sendPhoto(Array.from(images).map((image) => image.common.file_url));
-                    } else {
-                        context.reply("No images are found!");
-                    }
-                }
-            }).catch((error) => handleError(context, error));
+    .then(() => config = new Config("config.json", { encoding: "utf8" })) //instantiate config
+    .then(() => config.load()) //load config
+    .then(() => { //instantiate modules
+        booru = new BooruFetcher({
+            booru: config.get("booru.site"),
+            rating: config.get("booru.rating"),
+            ratingOverride: config.get("booru.ratingOverride")
+        });
+        eventBus = new EventEmitter();
+        listener = new Listener((context) => [context.type, ...context.subTypes].forEach((event) => eventBus.emit(event, context)), {
+            accessToken: config.get("vk.accessToken"),
+            secretKey: config.get("listening.secretKey"),
+            confirmationCode: config.get("listening.confirmationCode"),
+            port: config.get("listening.port"),
+            tls: config.get("listening.tls"),
+            path: config.get("listening.path")
         });
     })
-    .then(listener.start()) // start listener
+    .then(() => { // bot logic
+        let messageNoImages = config.get("text.noImages", "text.noImages"); 
+        let messageError = config.get("text.error", "text.error");
+        let buttonMore = config.get("text.buttons.more", "text.buttons.more");
+        let buttonBatch = config.get("text.buttons.batch", "text.buttons.batch");
+
+        function buildKeyboard(tags) {
+            return Keyboard.keyboard([[
+                Keyboard.textButton({
+                    label: buttonMore,
+                    payload: { tags },
+                    color: Keyboard.PRIMARY_COLOR
+                }),
+                Keyboard.textButton({
+                    label: buttonBatch,
+                    payload: { tags, count: 5 },
+                    color: Keyboard.DEFAULT_COLOR
+                })
+            ]]);
+        }
+
+        function sendBooruImages(context, tags = [], count = 1) {
+            if (count > 5) count = 5;
+
+            booru.fetch(tags, count).then((images) => {
+                if (images.length) {
+                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
+                        keyboard: buildKeyboard(tags)
+                    });
+                } else {
+                    context.reply(messageNoImages);
+                }
+            }).catch((error) => {
+                console.error(error);
+                context.reply(messageError);
+            });
+        } 
+
+        eventBus.on("text", (context) => {
+            context.setActivity();
+
+            let payload = context.messagePayload;
+            let tags, count;
+            if (payload) {
+                tags = payload.tags;
+                count = payload.count;
+            } else {
+                tags = context.text;
+            }
+
+            sendBooruImages(context, tags, count);
+        });
+    })
+    .then(() => listener.start()) //start listener
     .then(() => console.log("Bot started up successfully!"))
     /*.then(() => { //test code
-        eventBridge.pushEvent("text", {
-            hasText: true,
+        eventBus.emit("text", {
             text: "maid",
 
             setActivity: function () {
@@ -60,12 +97,15 @@ Promise.resolve()
             },
             sendPhoto: function (photo) {
                 console.log("sendPhoto(" + photo + ")");
+            },
+            send: function (data) {
+                console.log("send(" + data + ")");
             }
         });
     })*/
-    .catch((error) => {
+    .catch((error) => { //exception handler
         console.error(error);
-        throw error;
+        process.exit(-1);
     });
 
 
