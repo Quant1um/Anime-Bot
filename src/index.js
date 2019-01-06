@@ -63,19 +63,22 @@ Promise.resolve()
         function sendBooruImages(context, tags = [], count = 1) {
             if (count > 5) count = 5;
 
-            booru.fetch(tags, count).then((images) => {
-                if (images.length) {
-                    context.send({
-                        attachment: uploadImages(context, Array.from(images).map((image) => image.common.file_url)),
-                        keyboard: buildKeyboard(tags)
-                    });
-                } else {
-                    context.reply(messageNoImages);
-                }
-            }).catch((error) => {
-                console.error(error);
-                context.reply(messageError);
-            });
+            booru.fetch(tags, count)
+                .then((images) => uploadImages(context, Array.from(images).map((image) => image.common.file_url)))
+                .then((images) => {
+                    if (images.length) {
+                        context.send({
+                            attachment: images,
+                            keyboard: buildKeyboard(tags)
+                        });
+                    } else {
+                        context.reply(messageNoImages);
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    context.reply(messageError);
+                });
         } 
 
         eventBus.on("text", (context) => {
