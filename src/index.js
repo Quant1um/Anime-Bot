@@ -51,12 +51,22 @@ Promise.resolve()
             ]]);
         }
 
+        function uploadImages(context, images) {
+            return Promise.all(images.map((image) =>
+                context.vk.upload.messagePhoto({
+                    peer_id: context.senderId,
+                    source: image
+                }).catch(() => null)
+            )).then(images => images.filter(v => v));
+        }
+
         function sendBooruImages(context, tags = [], count = 1) {
             if (count > 5) count = 5;
 
             booru.fetch(tags, count).then((images) => {
                 if (images.length) {
-                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
+                    context.send({
+                        attachment: uploadImages(Array.from(images).map((image) => image.common.file_url)),
                         keyboard: buildKeyboard(tags)
                     });
                 } else {
