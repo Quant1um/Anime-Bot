@@ -58,7 +58,7 @@ Promise.resolve()
                     peer_id: context.senderId,
                     source: image
                 }).catch(() => null)
-            )).then(images => images.filter(v => v));
+            ));
         }
 
         function sendBooruImages(context, tags = [], count = 1) {
