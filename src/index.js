@@ -66,8 +66,10 @@ Promise.resolve()
 
             booru.fetch(tags, count)
                 .then((images) => uploadImages(context, Array.from(images).map((image) => image.common.file_url)))
+                .then((images) => images.filter((image) => image !== null))
                 .then((images) => {
                     console.log("d: " + images.length);
+                    console.log(images);
                     if (images.length) {
                         context.send({
                             attachment: images,
