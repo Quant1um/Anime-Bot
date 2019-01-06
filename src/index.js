@@ -53,6 +53,7 @@ Promise.resolve()
 
         function uploadImages(context, images) {
             console.log("t: " + images.length);
+            console.log(images);
             return Promise.all(images.map((image) =>
                 context.vk.upload.messagePhoto({
                     peer_id: context.senderId,
@@ -66,7 +67,11 @@ Promise.resolve()
 
             booru.fetch(tags, count)
                 .then((images) => uploadImages(context, Array.from(images).map((image) => image.common.file_url)))
-                .then((images) => images.filter((image) => image !== null))
+                .then((images) => {
+                    console.log("f: " + images.length);
+                    console.log(images);
+                    return images.filter((image) => image !== null);
+                })
                 .then((images) => {
                     console.log("d: " + images.length);
                     console.log(images);
