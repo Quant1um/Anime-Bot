@@ -58,7 +58,7 @@ Promise.resolve()
                 context.vk.upload.messagePhoto({
                     peer_id: context.senderId,
                     source: image
-                }).catch(() => null)
+                })
             ));
         }
 
