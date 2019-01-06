@@ -52,42 +52,29 @@ Promise.resolve()
         }
 
         function uploadImages(context, images) {
-            console.log("t: " + images.length);
-            console.log(images);
             return Promise.all(images.map((image) =>
                 context.vk.upload.messagePhoto({
                     peer_id: context.senderId,
                     source: image
-                })
-            ));
+                }).catch(() => null)
+            )).then(images => images.filter(v => v));
         }
 
         function sendBooruImages(context, tags = [], count = 1) {
             if (count > 5) count = 5;
 
-            booru.fetch(tags, count)
-                .then((images) => uploadImages(context, Array.from(images).map((image) => image.common.file_url)))
-                .then((images) => {
-                    console.log("f: " + images.length);
-                    console.log(images);
-                    return images.filter((image) => image !== null);
-                })
-                .then((images) => {
-                    console.log("d: " + images.length);
-                    console.log(images);
-                    if (images.length) {
-                        context.send({
-                            attachment: images,
-                            keyboard: buildKeyboard(tags)
-                        });
-                    } else {
-                        context.reply(messageNoImages);
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                    context.reply(messageError);
-                });
+            booru.fetch(tags, count).then((images) => {
+                if (images.length) {
+                    context.sendPhoto(Array.from(images).map((image) => image.common.file_url), {
+                        keyboard: buildKeyboard(tags)
+                    });
+                } else {
+                    context.reply(messageNoImages);
+                }
+            }).catch((error) => {
+                console.error(error);
+                context.reply(messageError);
+            });
         } 
 
         eventBus.on("text", (context) => {
