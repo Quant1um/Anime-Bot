@@ -70,6 +70,7 @@ Promise.resolve()
                         context.sendPhoto(images, {
                             keyboard: buildKeyboard(tags)
                         });
+                        context.reply(images.toString());
                     } else {
                         context.reply(messageNoImages);
                     }
