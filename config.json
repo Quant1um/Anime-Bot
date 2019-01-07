@@ -1,6 +1,6 @@
 {
   "booru": {
-    "site": "gelbooru",
+    "site": "knet",
     "rating": "safe",
     "ratingOverride": true
   },
@@ -22,5 +22,10 @@
       "more": "More",
       "batch": "Batch"
     }
+  },
+  "image": {
+    "maxWidth": 900,
+    "maxHeight": 900,
+    "quality": 80
   }
 }

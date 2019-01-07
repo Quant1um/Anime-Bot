@@ -13,9 +13,10 @@ const Keyboard = require("vk-io").Keyboard;
 const EventEmitter = require("events").EventEmitter;
 const BooruFetcher = require("./booru_fetcher");
 const Config = require("./config");
+const ImageLoader = require("./image_loader");
 const Listener = getListenerClass();
 
-let config, booru, eventBus, listener;
+let config, booru, eventBus, listener, imgLoader;
 
 Promise.resolve()
     .then(() => config = new Config("config.json", { encoding: "utf8" })) //instantiate config
@@ -34,6 +35,11 @@ Promise.resolve()
             port: config.get("listening.port"),
             tls: config.get("listening.tls"),
             path: config.get("listening.path")
+        });
+        imgLoader = new ImageLoader({
+            maxWidth: config.get("image.maxWidth"),
+            maxHeight: config.get("image.maxHeight"),
+            quality: config.get("image.quality")
         });
     })
     .then(() => { // bot logic
@@ -57,13 +63,23 @@ Promise.resolve()
             ]]);
         }
 
+        function loadImages(images) {
+            return images.map((image) => imgLoader.load(image));
+        }
+
         function uploadImages(context, images) {
-            return Promise.all(images.map((image) =>
+            return images.map((image) => 
                 context.vk.upload.messagePhoto({
                     peer_id: context.senderId,
                     source: image
-                }).catch(() => null)
-            )).then(images => images.filter((image) => image !== null));
+                }).catch(() => null));
+        }
+
+        //the MESS
+        function processImages(context, images) {
+            return Promise.all(loadImages(images)) //load each image into buffer (and resize it)
+                .then((images) => Promise.all(uploadImages(context, images))) //upload each onto vk server
+                .then((images) => images.filter((image) => image !== null)); //filter failed ones
         }
 
         function sendBooruImages(context, tags = [], count = 1) {
@@ -71,7 +87,7 @@ Promise.resolve()
 
             booru.fetch(tags, count)
                 .then((images) => Array.from(images).map((image) => image.common.file_url))
-                .then((images) => uploadImages(context, images))
+                .then((images) => processImages(context, images))
                 .then((images) => {
                     if (images.length) {
                         context.send({
