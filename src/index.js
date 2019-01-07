@@ -67,7 +67,6 @@ Promise.resolve()
                 .then((images) => Array.from(images).map((image) => image.common.file_url))
                 .then((images) => {
                     if (images.length) {
-                        context.reply(images.toString());
                         context.sendPhoto(images, {
                             keyboard: buildKeyboard(tags)
                         });
