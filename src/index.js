@@ -65,11 +65,14 @@ Promise.resolve()
 
             booru.fetch(tags, count)
                 .then((images) => Array.from(images).map((image) => image.common.file_url))
-                .then((images) => uploadImages(context, images))
+                //.then((images) => uploadImages(context, images))
                 .then((images) => {
                     if (images.length) {
-                        context.send({
+                        /*context.send({
                             attachment: images,
+                            keyboard: buildKeyboard(tags)
+                        });*/
+                        context.sendPhoto(images, {
                             keyboard: buildKeyboard(tags)
                         });
                     } else {

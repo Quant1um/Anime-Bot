@@ -26,7 +26,6 @@
   <ItemGroup>
     <Folder Include="AnimeBot" />
     <Folder Include="AnimeBot\AnimeBot" />
-    <Folder Include="database\" />
     <Folder Include="src\" />
   </ItemGroup>
   <ItemGroup>
