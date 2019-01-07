@@ -1,15 +1,21 @@
-﻿const Keyboard = require("vk-io").Keyboard;
+﻿const getListenerClass = () => {
+    try {
+        let t = require("./local_test");
+        console.log("Test listener has been loaded!");
+        return t;
+    } catch(e) {
+        return require("./listener");
+    }
+};
+
+const Keyboard = require("vk-io").Keyboard;
 
 const EventEmitter = require("events").EventEmitter;
 const BooruFetcher = require("./booru_fetcher");
 const Config = require("./config");
-const Listener = require("./listener");
+const Listener = getListenerClass();
 
 let config, booru, eventBus, listener;
-
-//process.env.ACCESS_TOKEN = "a";
-//process.env.SECRET_KEY = "a";
-//process.env.CONFIRMATION_CODE = "a";
 
 Promise.resolve()
     .then(() => config = new Config("config.json", { encoding: "utf8" })) //instantiate config
@@ -51,15 +57,25 @@ Promise.resolve()
             ]]);
         }
 
+        function uploadImages(context, images) {
+            return Promise.all(images.map((image) =>
+                context.vk.upload.messagePhoto({
+                    peer_id: context.senderId,
+                    source: image
+                }).catch(() => null)
+            )).then(images => images.filter((image) => image !== null));
+        }
+
         function sendBooruImages(context, tags = [], count = 1) {
             if (count > 5) count = 5;
 
             booru.fetch(tags, count)
                 .then((images) => Array.from(images).map((image) => image.common.file_url))
+                .then((images) => uploadImages(context, images))
                 .then((images) => {
-                    console.log(images);
                     if (images.length) {
-                        context.sendPhoto(images, {
+                        context.send({
+                            attachment: images,
                             keyboard: buildKeyboard(tags)
                         });
                     } else {
@@ -88,24 +104,6 @@ Promise.resolve()
     })
     .then(() => listener.start()) //start listener
     .then(() => console.log("Bot started up successfully!"))
-    /*.then(() => { //test code
-        eventBus.emit("text", {
-            text: "maid",
-
-            setActivity: function () {
-                console.log("setActivity()");
-            },
-            reply: function (message) {
-                console.log("reply(" + message + ")");
-            },
-            sendPhoto: function (photo) {
-                console.log("sendPhoto(" + photo + ")");
-            },
-            send: function (data) {
-                console.log("send(" + data + ")");
-            }
-        });
-    })*/
     .catch((error) => { //exception handler
         console.error(error);
         process.exit(-1);
