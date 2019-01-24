@@ -1,29 +1,21 @@
 ﻿const Util = require("util");
 const _ = require("lodash");
 const readFile = Util.promisify(require("fs").readFile);
-
-/**
- * Throws error if variable is falsy
- * @param {any} variable Variable to check
- * @param {string} message Error message
- */
-const assert = (variable, message) => {
-    if (!variable) {
-        throw new Error(message);
-    }
-};
+const assert = require("./utils/assert");
+const type = require("./utils/type");
 
 /**
  * Class used for retrieving configuration from file 
  */
 class ConfigLoader {
     constructor(path, { encoding = "utf8" }) {
-        assert(path, "Cannot create config loader: no path is supplied!");
+        assert(type(path, String), "Cannot create config loader: invalid path type (expected string)!");
+        assert(type(encoding, String), "Cannot create config loader: invalid encoding type (expected string)!");
 
         this.path = path;
         this.encoding = encoding;
     }
-
+    
     load() {
         return readFile(this.path, this.encoding)
             .catch((err) => {

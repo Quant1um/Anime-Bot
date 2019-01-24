@@ -27,6 +27,8 @@
     <Folder Include="AnimeBot" />
     <Folder Include="AnimeBot\AnimeBot" />
     <Folder Include="src\" />
+    <Folder Include="src\tags\" />
+    <Folder Include="src\utils\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="index.js">
@@ -38,6 +40,18 @@
     <Compile Include="src\index.js" />
     <Compile Include="src\listener.js" />
     <Compile Include="src\local_test.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\tags\request_context.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\tags\tag_resolver.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\utils\assert.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\utils\type.js">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

@@ -1,9 +1,24 @@
 {
   "booru": {
-    "site": "gelbooru",
-    "rating": "safe",
-    "ratingOverride": true
+    "default": "gelbooru",
+    "defaultRating": "safe",
+    "allowRatingOverride": true,
+    "allowBooruOverride": true,
+    "batchSize": 5,
+    "tokenSplitRegex": "\\s+",
+
+    "mappings": {
+      "hentai": "rating:e",
+      "explicit": "rating:e",
+      "questionable": "rating:q",
+      "safe": "rating:s",
+      "h": "rating:e",
+      "e": "rating:e",
+      "q": "rating:q",
+      "s": "rating:s"
+    }
   },
+
   "listening": {
     "port": "#PORT",
     "confirmationCode": "#CONFIRMATION_CODE",
@@ -11,18 +26,28 @@
     "tls": false,
     "path": "/"
   },
+
   "vk": {
     "accessToken": "#ACCESS_TOKEN"
   },
+
   "text": {
     "noImages": "No images are found!",
-    "error": "An error has been occurred. Please report this @quant1um",
+    "errors": {
+      "error": "An error has been occurred. Please report this @quant1um",
+      "booruInvalid": "No such booru exists!",
+      "booruBlacklisted": "Given booru is blacklisted!",
+      "booruTagDuplication": "Booru tag is occuring twice or more in the query!",
+      "ratingInvalid": "Rating is invalid!",
+      "ratingTagDuplication": "Rating tag is occuring twice or more in the query!"
+    },
 
     "buttons": {
       "more": "More",
       "batch": "Batch"
     }
   },
+
   "image": {
     "maxWidth": 900,
     "maxHeight": 900,

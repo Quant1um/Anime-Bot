@@ -1,20 +1,16 @@
 ﻿const VK = require("vk-io");
-
-/**
- * Throws error if variable is falsy
- * @param {any} variable Variable to check
- * @param {string} message Error message
- */
-const assert = (variable, message) => {
-    if (!variable) {
-        throw new Error(message);
-    }
-};
+const assert = require("./utils/assert");
+const type = require("./utils/type");
 
 /**
  * Class used for listening webhook updates
  */
 class Listener {
+    /**
+    * Listener callback
+    * @callback Listener~handler
+    * @param {VK.Context} responseCode
+    */
 
     /**
      * Constructs new listener
@@ -28,11 +24,16 @@ class Listener {
      * @param {string} options.confirmationCode Webhook confirmation code
      */
     constructor(handler, { port = 8000, tls = false, path = "/", accessToken, secretKey, confirmationCode }) {
-        assert(handler, "Cannot create listener: no handler is supplied!");
-        assert(accessToken, "Cannot create listener: no access token is supplied!");
-        assert(secretKey, "Cannot create listener: no secret key is supplied!");
-        assert(confirmationCode, "Cannot create listener: no confirmation code is supplied!");
-
+        assert(type(handler, Function), "Cannot create listener: invalid handler type (expected function)!");
+        assert(type(port, Number), "Cannot create listener: invalid port type (expected number)!");
+        assert(type(port, Boolean), "Cannot create listener: invalid TLS type (expected boolean)!");
+        assert(type(path, String), "Cannot create listener: invalid path type (expected string)!");
+        assert(type(accessToken, String), "Cannot create listener: invalid access token type (expected string)!");
+        assert(type(secretKey, String), "Cannot create listener: invalid secret key type (expected string)!");
+        assert(type(confirmationCode, String), "Cannot create listener: invalid confirmation code type (expected string)!");
+        
+        assert(port > 0 && port <= 65535, "Cannot create listener: port must be positive and be lower than or equal 65535!");
+        
         this.handler = handler;
 
         this.port = port;
@@ -70,9 +71,3 @@ class Listener {
 }
 
 module.exports = Listener;
-
-/**
-* Listener callback
-* @callback Listener~handler
-* @param {VK.Context} responseCode
-*/
