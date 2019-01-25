@@ -133,6 +133,7 @@ Promise.resolve()
                 batch = payload.batch;
             } else {
                 tags = context.text;
+                batch = false;
             }
 
             sendBooruImages(context, tags, batch);

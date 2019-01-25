@@ -160,6 +160,7 @@ class TagResolver {
             tags = this.resolveRating(tags);
 
             let booru = this.resolveBooru(tags);
+
             resolve(new RequestContext({
                 tags, booru,
                 count: batch ? this.batchSize : 1
