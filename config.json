@@ -1,6 +1,6 @@
 {
   "booru": {
-    "default": "knet",
+    "default": "gelbooru",
     "defaultRating": "safe",
     "allowRatingOverride": true,
     "allowBooruOverride": true,
