@@ -38,7 +38,7 @@ class Listener {
         assert(type(confirmationCode, String), "Cannot create listener: invalid confirmation code type (expected string)!");
         
         assert(port > 0 && port <= 65535, "Cannot create listener: port must be positive and be lower than or equal 65535!");
-        assert((port | 0) === port, "Cannot create listener: port must be an integer!");
+        port = Math.round(port);
 
         this.handler = handler;
 
