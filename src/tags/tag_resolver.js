@@ -16,17 +16,16 @@ const BooruBlacklistedError = "booruBlacklisted";
 const RatingDuplicationError = "ratingTagDuplication";
 const RatingInvalidError = "ratingInvalid";
 
-const checkRating = (rating) => {
-    switch (rating.toLowerCase()) {
-        case "e": return true;
-        case "q": return true;
-        case "s": return true;
-        case "explicit": return true;
-        case "questionable": return true;
-        case "safe": return true;
-        default: return false;
-    }
+const validRatings = {
+    e: true,
+    q: true,
+    s: true,
+    explicit: true,
+    questionable: true,
+    safe: true
 };
+
+const checkRating = (rating) => validRatings.hasOwnProperty(rating);
 
 class TagResolvingError extends Error {
     constructor(errCode) {
@@ -56,7 +55,7 @@ class TagResolver {
         assert(type(mappings, Object), "Failed to create tag resolver: invalid mappings type (expected object)!");
         assert(type(booruBlacklist, Array), "Failed to create tag resolver: invalid booru blacklist type (expected array)!");
 
-        assert(Booru.resolveSite(defaultBooru) !== null, "Failed to create tag resolver: given default booru doesn't exists!")
+        assert(Booru.resolveSite(defaultBooru) !== null, "Failed to create tag resolver: given default booru doesn't exists!");
         assert(batchSize >= 2 && batchSize <= 10, "Failed to create tag resolver: batch size must be in range of [2, 10]");
         assert(checkRating(defaultRating), "Failed to create tag resolver: default rating is invalid!");
 

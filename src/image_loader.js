@@ -37,8 +37,9 @@ class ImageLoader {
     
     resizeIfNecessary(metadata, image) {
         if (metadata.width > this.maxWidth ||
-            metadata.maxHeight > this.maxHeight)
+            metadata.maxHeight > this.maxHeight) {
             return image.resize(this.maxWidth, this.maxHeight, { fit: "inside" });
+        }
         return image;
     }
 }
