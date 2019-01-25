@@ -36,9 +36,9 @@ class Listener {
         assert(type(accessToken, String), "Cannot create listener: invalid access token type (expected string)!");
         assert(type(secretKey, String), "Cannot create listener: invalid secret key type (expected string)!");
         assert(type(confirmationCode, String), "Cannot create listener: invalid confirmation code type (expected string)!");
-        
-        assert(port > 0 && port <= 65535, "Cannot create listener: port must be positive and be lower than or equal 65535!");
+
         port = Math.round(port);
+        assert(port > 0 && port <= 65535, "Cannot create listener: port must be positive and be lower than or equal 65535!");
 
         this.handler = handler;
 
