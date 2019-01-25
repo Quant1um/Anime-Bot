@@ -34,7 +34,7 @@
   "text": {
     "noImages": "No images are found!",
     "errors": {
-      "error": "An error has been occurred. Please report this @quant1um",
+      "generic": "An error has been occurred. Please report this @quant1um",
       "booruInvalid": "No such booru exists!",
       "booruBlacklisted": "Given booru is blacklisted!",
       "booruTagDuplication": "Booru tag is occuring twice or more in the query!",

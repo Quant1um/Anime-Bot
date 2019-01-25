@@ -150,7 +150,7 @@ class TagResolver {
     }
 
     resolve(tags, batch = false) {
-        return new Promise(() => {
+        return new Promise((resolve) => {
             if (!Array.isArray(tags)) {
                 tags = this.tokenize(tags);
             }
@@ -160,10 +160,10 @@ class TagResolver {
             tags = this.resolveRating(tags);
 
             let booru = this.resolveBooru(tags);
-            return new RequestContext({
+            resolve(new RequestContext({
                 tags, booru,
                 count: batch ? this.batchSize : 1
-            });
+            }));
         });
     }
     
