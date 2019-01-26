@@ -121,7 +121,7 @@ class TagResolver {
     
     resolveBooru(tags) {
         let override = null;
-        tags.filter((tag) => {
+        tags = tags.filter((tag) => {
             let result = BooruTagRegexp.exec(tag);
             if (result !== null) {
                 if (this.allowBooruOverride) {
@@ -140,13 +140,13 @@ class TagResolver {
             if (this.booruBlacklist[override]) {
                 throw new TagResolvingError(BooruBlacklistedError);
             } else if (Booru.resolveSite(override) !== null) {
-                return override;
+                return { booru: override, tags };
             } else {
                 throw new TagResolvingError(BooruInvalidError);
             }
         }
 
-        return this.defaultBooru;
+        return { booru: this.defaultBooru, tags };
     }
 
     resolve(tags, batch = false) {
@@ -159,7 +159,10 @@ class TagResolver {
             tags = this.resolveMappings(tags);
             tags = this.resolveRating(tags);
 
-            let booru = this.resolveBooru(tags);
+            let resolved = this.resolveBooru(tags);
+            let booru = resolved.booru;
+
+            tags = resolved.tags;
 
             resolve(new RequestContext({
                 tags, booru,
