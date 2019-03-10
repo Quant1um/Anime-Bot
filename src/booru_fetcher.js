@@ -11,6 +11,7 @@ class BooruFetcher {
                 throw result;
             }
 
+            console.log(JSON.stringify(result));
             return result;
         });
     }

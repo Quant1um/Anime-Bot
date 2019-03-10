@@ -82,7 +82,7 @@ class TagResolver {
         tags.forEach((value) => {
             let mapped = this.mappings[value];
             if (mapped) {
-                result.push(...mapped);
+                result.push(mapped);
             } else {
                 result.push(value);
             }
@@ -173,15 +173,15 @@ class TagResolver {
     
     fixMappings(mappings) {
         _.forOwn(mappings, (value, index) => {
-            if (!Array.isArray(value)) {
-                value = this.tokenize(value);
-            }
+            value = value.toLowerCase();
+            index = index.toLowerCase();
 
-            let newIndex = index.toLowerCase();
-            assert(this.tokenize(newIndex).length === 1, "Error: probably one of the mappings' key contains more than 1 tag");
-            
-            mappings[newIndex] = this.resolveCase(value);
+            assert(this.tokenize(index).length === 1, "Error: probably one of the mappings' keys contains more than 1 tag");
+            assert(this.tokenize(value).length === 1, "Error: probably one of the mappings' values contains more than 1 tag");
+
+            mappings[index] = value;
         });
+
         return mappings;
     }
 
@@ -189,7 +189,7 @@ class TagResolver {
         let result = {};
         list.forEach((value) => {
             let newValue = value.toLowerCase();
-            assert(Booru.resolveSite(newValue) !== null, "Error: one of blacklisted boorus are not exists!");
+            assert(Booru.resolveSite(newValue) !== null, "Error: one of blacklisted boorus (" + newValue + ") are not exists!");
 
             result[newValue] = true;
         });
