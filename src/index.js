@@ -101,25 +101,10 @@ Promise.resolve()
         
         function sendBooruImages(context, tags = [], batch = false) {
             tagResolver.resolve(tags, batch)
-                .then((rctx) => {
-                    console.log("test 00: " + JSON.stringify(rctx));
-                    return rctx;
-                })
                 .then((rctx) => BooruFetcher.fetch(rctx))
-                .then((images) => {
-                    console.log("test 01: " + images.length);
-                    return images;
-                })
-                .then((images) => Array.from(images).map((image) => image.common.file_url))
-                .then((images) => {
-                    console.log("test 02: " + images.length);
-                    return images;
-                })
+                .then((images) => Array.from(images))
+                .then((images) => images.map((image) => image.common.file_url))
                 .then((images) => processImages(context, images))
-                .then((images) => {
-                    console.log("test 03: " + images.length);
-                    return images;
-                })
                 .then((images) => {
                     if (images.length) {
                         context.send({
