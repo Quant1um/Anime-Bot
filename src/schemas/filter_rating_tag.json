@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "filter_rating_tag.json",
+  "title": "Filter configuration (rating tag)",
+  "type": "object",
+  "properties": {
+    "allowedRatings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "defaultRating": {
+      "type": "string"
+    },
+    "overridable": { 
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

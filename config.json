@@ -1,21 +1,38 @@
 {
   "booru": {
     "default": "gelbooru",
-    "defaultRating": "safe",
-    "allowRatingOverride": true,
-    "allowBooruOverride": true,
     "batchSize": 5,
     "tokenSplitRegex": "\\s+",
 
-    "mappings": {
-      "hentai": "rating:e",
-      "explicit": "rating:e",
-      "questionable": "rating:q",
-      "safe": "rating:s",
-      "h": "rating:e",
-      "e": "rating:e",
-      "q": "rating:q",
-      "s": "rating:s"
+    "filters": {
+      "directory": "src/tags/filters",
+      "list": {
+        "booru_tag": {
+          "blacklist": [],
+          "tags": [ "from", "booru", "source", "f" ]
+        },
+
+        "rating_tag": {
+          "allowedRatings": [ "safe", "questionable", "explicit", "any" ],
+          "defaultRating": "safe",
+          "overridable": true
+        },
+
+        "tag_mapping": {
+          "mappings": {
+            "s": "rating:s",
+            "q": "rating:q",
+            "e": "rating:e",
+            "h": "rating:h",
+            "*": "rating:*"
+          }
+        }
+      },
+      "priority": [
+        "tag_mapping",
+        "booru_tag",
+        "rating_tag"
+      ]
     }
   },
 
@@ -35,11 +52,25 @@
     "noImages": "No images are found!",
     "errors": {
       "generic": "An error has been occurred. Please report this @quant1um",
-      "booruInvalid": "No such booru exists!",
-      "booruBlacklisted": "Given booru is blacklisted!",
-      "booruTagDuplication": "Booru tag is occuring twice or more in the query!",
-      "ratingInvalid": "Rating is invalid!",
-      "ratingTagDuplication": "Rating tag is occuring twice or more in the query!"
+      "tag": {
+        "empty": "Invalid tag '{tag}': given tag is empty!",
+        "emptyKey": "Invalid tag '{tag}': given metatag has empty key!",
+        "notOr": "Invalid tag '{tag}': tags cannot be excluded and or-combined at the same time!",
+        "fuzzyMeta": "invalid tag '{tag}': metatags cannot be fuzzy!"
+      },
+      "filters": {
+        "rating": {
+          "notOverridable": "Rating cannot be overridden!",
+          "multipleTags": "Cannot have more than 1 rating tag!",
+          "invalidRating": "'{value}' is not a valid rating!",
+          "notAllowedRating": "'{value}' rating is not allowed!"
+        },
+        "booru": {
+          "multipleTags": "Cannot have more than 1 booru tag!",
+          "doesntExist": "Booru '{value}' doesn't exist!",
+          "blacklisted": "Booru '{value}' is blacklisted!"
+        }
+      }
     },
 
     "buttons": {

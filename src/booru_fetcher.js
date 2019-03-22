@@ -6,7 +6,7 @@
 class BooruFetcher {
     
     static fetch(context) {
-        return Booru.search(context.booru, context.tags, { limit: context.count, random: context.random }).then((result) => {
+        return Booru.search(context.booru, context.tags.map((tag) => tag.toString()), { limit: context.count, random: context.random }).then((result) => {
             if (result instanceof Error) {
                 throw result;
             }

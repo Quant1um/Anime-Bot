@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "category_text.json",
+  "title": "Config localization/message text category",
+  "type": "object",
+  "additionalProperties": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "$ref": "category_text.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "filter_booru_tag.json",
+  "title": "Filter configuration (booru tag)",
+  "type": "object",
+  "properties": {
+    "blacklist": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [ "tags" ],
+  "additionalProperties": false
+}

@@ -8,68 +8,62 @@
     }
 };
 
-const Keyboard = require("vk-io").Keyboard;
+const { Keyboard } = require("vk-io");
+const { EventEmitter } = require("events");
 
-const EventEmitter = require("events").EventEmitter;
-const BooruFetcher = require("./booru_fetcher");
-const Config = require("./config");
-const ImageLoader = require("./image_loader");
-const TagResolver = require("./tags/tag_resolver");
-const Listener = getListenerClass();
+const Config                = require("./config");
+const ImageLoader           = require("./image_loader");
+const BooruFetcher          = require("./booru_fetcher");
+const L10n                  = require("./l10n");
+const TagResolver           = require("./tags/tag_resolver");
+const FilterLoader          = require("./tags/filter_loader");
+const Listener              = getListenerClass();
 
-let config, eventBus, listener, imgLoader, tagResolver;
+let config, eventBus, listener, imageLoader, tagResolver, l10n;
 
 Promise.resolve()
-    .then(() => config = new Config("config.json", { encoding: "utf8" })) //instantiate config
+    .then(() => config = new Config("config.json", { encoding: "utf8", validation: { directory: "src/schemas", base: "base.json" } })) //instantiate config
     .then(() => config.load()) //load config
     .then(() => { //instantiate modules
         eventBus = new EventEmitter();
         listener = new Listener((context) => [context.type, ...context.subTypes].forEach((event) => eventBus.emit(event, context)), {
-            accessToken: config.get("vk.accessToken"),
-            secretKey: config.get("listening.secretKey"),
-            confirmationCode: config.get("listening.confirmationCode"),
-            port: config.get("listening.port"),
-            tls: config.get("listening.tls"),
-            path: config.get("listening.path")
+            accessToken:        config.get("vk.accessToken"),
+            secretKey:          config.get("listening.secretKey"),
+            confirmationCode:   config.get("listening.confirmationCode"),
+            port:               config.get("listening.port"),
+            tls:                config.get("listening.tls"),
+            path:               config.get("listening.path")
         });
 
-        imgLoader = new ImageLoader({
-            maxWidth: config.get("image.maxWidth"),
-            maxHeight: config.get("image.maxHeight"),
-            quality: config.get("image.quality")
+        imageLoader = new ImageLoader({
+            maxWidth:           config.get("image.maxWidth"),
+            maxHeight:          config.get("image.maxHeight"),
+            quality:            config.get("image.quality")
         });
 
         tagResolver = new TagResolver({
-            defaultBooru: config.get("booru.default"),
-            defaultRating: config.get("booru.defaultRating"),
-            allowRatingOverride: config.get("booru.allowRatingOverride"),
-            allowBooruOverride: config.get("booru.allowBooruOverride"),
-            batchSize: config.get("booru.batchSize"),
-            tokenRegex: config.get("booru.tokenSplitRegex"),
-            mappings: config.get("booru.mappings")
+            defaultBooru:       config.get("booru.default"),
+            batchSize:          config.get("booru.batchSize"),
+            tokenRegex:         config.get("booru.tokenSplitRegex"),
+            filters:            FilterLoader.load(
+                                    config.get("booru.filters.directory"),
+                                    config.get("booru.filters.list"),
+                                    config.get("booru.filters.priority")
+                                )
         });
+
+        l10n = new L10n(config.get("text"));
     })
     .then(() => { // bot logic
-        let messageNoImages = config.get("text.noImages", "text.noImages"); 
-        let messageError = config.get("text.errors.generic", "text.errors.generic");
-        let buttonMore = config.get("text.buttons.more", "text.buttons.more");
-        let buttonBatch = config.get("text.buttons.batch", "text.buttons.batch");
-        let tagResolveMessages = [];
-        tagResolveMessages[TagResolver.ErrorCodes.BooruDuplicationError] = config.get("text.errors.booruTagDuplication", "text.errors.booruTagDuplication");
-        tagResolveMessages[TagResolver.ErrorCodes.BooruInvalidError] = config.get("text.errors.booruInvalid", "text.errors.booruInvalid");
-        tagResolveMessages[TagResolver.ErrorCodes.BooruBlacklistedError] = config.get("text.errors.booruBlacklisted", "text.errors.booruBlacklisted");
-        tagResolveMessages[TagResolver.ErrorCodes.RatingInvalidError] = config.get("text.errors.ratingInvalid", "text.errors.ratingInvalid");
-        tagResolveMessages[TagResolver.ErrorCodes.RatingDuplicationError] = config.get("text.errors.ratingTagDuplication", "text.errors.ratingTagDuplication");
-
         function buildKeyboard(tags) {
             return Keyboard.keyboard([[
                 Keyboard.textButton({
-                    label: buttonMore,
+                    label: l10n.get("buttons.more"),
                     payload: { tags, batch: false },
                     color: Keyboard.PRIMARY_COLOR
                 }),
                 Keyboard.textButton({
-                    label: buttonBatch,
+                    label: l10n.get("buttons.batch"),
                     payload: { tags, batch: true },
                     color: Keyboard.DEFAULT_COLOR
                 })
@@ -77,7 +71,7 @@ Promise.resolve()
         }
 
         function loadImages(images) {
-            return images.map((image) => imgLoader.load(image));            
+            return images.map((image) => imageLoader.load(image));            
         }
 
         function uploadImages(context, images) {
@@ -102,7 +96,8 @@ Promise.resolve()
         function sendBooruImages(context, tags = [], batch = false) {
             tagResolver.resolve(tags, batch)
                 .then((rctx) => BooruFetcher.fetch(rctx))
-                .then((images) => Array.from(images).map((image) => image.common.file_url))
+                .then((images) => Array.from(images))
+                .then((images) => images.map((image) => image.common.file_url))
                 .then((images) => processImages(context, images))
                 .then((images) => {
                     if (images.length) {
@@ -111,14 +106,14 @@ Promise.resolve()
                             keyboard: buildKeyboard(tags)
                         });
                     } else {
-                        context.reply(messageNoImages);
+                        context.reply(l10n.get("noImages"));
                     }
                 }).catch((error) => {
                     if (error instanceof TagResolver.Error) {
-                        context.reply(tagResolveMessages[error.errorCode]);
+                        context.reply(l10n.format(error.context, "errors", error.errorCode));
                     } else {
                         console.error(error);
-                        context.reply(messageError);
+                        context.reply(l10n.get("errors.generic"));
                     }
                 });
         }

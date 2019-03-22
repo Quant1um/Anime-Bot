@@ -1,18 +1,78 @@
-﻿const assert = require("../utils/assert");
-const type = require("../utils/type");
+﻿const { TagInfo } = require("./tag_info");
+const Booru = require("booru");
+
+const argcheck = require("../utils/argcheck");
+
+const checkValidBooru = (val) => {
+    if (Booru.resolveSite(val.toLowerCase()) === null) {
+        throw new Error("not a valid booru");
+    }
+};
 
 class RequestContext {
 
     constructor({ tags, booru, count = 1, random = true }) {
-        assert(type(tags, Array), "Failed to request context: invalid tags type (array expected)!");
-        assert(type(booru, String), "Failed to request context: invalid booru type (string expected)!");
-        assert(type(count, Number), "Failed to request context: invalid count type (number expected)!");
-        assert(type(random, Boolean), "Failed to request context: invalid random type (boolean expected)!");
-        
         this.tags = tags;
         this.booru = booru;
         this.count = count;
         this.random = random;
+    }
+
+    get tags() {
+        return this.__tags;
+    }
+
+    set tags(tags) {
+        argcheck({ tags }, {
+            tags: argcheck.values(
+                argcheck.is(TagInfo)
+            )
+        });
+        
+        this.__tags = tags;
+    }
+
+    get booru() {
+        return this.__booru;
+    }
+
+    set booru(booru) {
+        argcheck({ booru }, {
+            booru: argcheck.every(
+                argcheck.is(String),
+                checkValidBooru
+            )
+        });
+
+        this.__booru = booru;
+    }
+
+    get count() {
+        return this.__count;
+    }
+
+    set count(count) {
+        argcheck({ count }, {
+            count: argcheck.every(
+                argcheck.is(Number),
+                argcheck.integer(),
+                argcheck.between(1, 10)
+            )
+        });
+
+        this.__count = count;
+    }
+
+    get random() {
+        return this.__random;
+    }
+
+    set random(random) {
+        argcheck({ random }, {
+            random: argcheck.is(Boolean)
+        });
+
+        this.__random = random;
     }
 }
 

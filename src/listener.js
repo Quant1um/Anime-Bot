@@ -1,6 +1,6 @@
 ﻿const VK = require("vk-io");
-const assert = require("./utils/assert");
-const type = require("./utils/type");
+
+const argcheck = require("./utils/argcheck");
 
 /**
  * Class used for listening webhook updates
@@ -24,24 +24,11 @@ class Listener {
      * @param {string} options.confirmationCode Webhook confirmation code
      */
     constructor(handler, { port = 8000, tls = false, path = "/", accessToken, secretKey, confirmationCode }) {
-        if (type(port, String)) {
-            port = new Number(port);
-            assert(isFinite(port), "Cannot create listener: invalid port type (expected number)!");
-        }
-
-        assert(type(handler, Function), "Cannot create listener: invalid handler type (expected function)!");
-        assert(type(port, Number), "Cannot create listener: invalid port type (expected number)!");
-        assert(type(tls, Boolean), "Cannot create listener: invalid TLS type (expected boolean)!");
-        assert(type(path, String), "Cannot create listener: invalid path type (expected string)!");
-        assert(type(accessToken, String), "Cannot create listener: invalid access token type (expected string)!");
-        assert(type(secretKey, String), "Cannot create listener: invalid secret key type (expected string)!");
-        assert(type(confirmationCode, String), "Cannot create listener: invalid confirmation code type (expected string)!");
-
-        port = Math.round(port);
-        assert(port > 0 && port <= 65535, "Cannot create listener: port must be positive and be lower than or equal 65535!");
+        argcheck({ handler }, {
+            handler: argcheck.is(Function)
+        });
 
         this.handler = handler;
-
         this.port = port;
         this.tls = tls;
 

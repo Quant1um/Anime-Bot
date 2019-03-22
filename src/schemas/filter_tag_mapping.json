@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "filter_tag_mapping.json",
+  "title": "Filter configuration (tag mapping)",
+  "type": "object",
+  "properties": {
+    "mappings": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}
