@@ -121,7 +121,9 @@ class TagBody {
     }
 
     get content() {
-        if (this.key !== null) return this.key + ":" + this.value;
+        if (this.key !== null) {
+            return this.key + ":" + this.value;
+        }
         return this.value;
     }
 

@@ -36,8 +36,8 @@ class FilterLoader {
             let path = Path.resolve(directory, filterName);
             let config = filtersInfo[filterName];
 
-            let filterClass = FilterLoader.loadClass(path, filterName);
-            let object = new filterClass(config);
+            let FilterClass = FilterLoader.loadClass(path, filterName);
+            let object = new FilterClass(config);
 
             return object.filter.bind(object);
         });

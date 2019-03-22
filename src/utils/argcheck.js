@@ -85,15 +85,14 @@ argcheck.maybe = (func) => {
 
 argcheck.values = (func) => {
     return (val) => {
-        for (let index in val) {
-            let value = val[index];
+        _.forOwn(val, (value) => {
             try {
                 func(value);
             } catch (e) {
                 e.message = e.message + ` (at element '${value}')`;
                 throw e;
             }
-        }
+        });
     };
 };
 
