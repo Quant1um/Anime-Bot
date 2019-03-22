@@ -36,11 +36,11 @@ class BooruTagFilter {
             if (tag.type === TagType.Meta && this.tags.has(tag.key)) {
                 let value = tag.value;
                 if (++count > 1) {
-                    throw new TagResolvingError("filter.booru.multipleTags");
+                    throw new TagResolvingError("filters.booru.multipleTags");
                 }
 
                 if (Booru.resolveSite(value) === null) {
-                    throw new TagResolvingError("filter.booru.doesntExist", { value });
+                    throw new TagResolvingError("filters.booru.doesntExist", { value });
                 }
 
                 if (this.blacklist.has(value)) {
