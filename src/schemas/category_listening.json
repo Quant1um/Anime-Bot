@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "category_listening.json",
+  "title": "Config vk listening category",
+  "type": "object",
+  "properties": {
+    "port": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 65535
+        },
+
+        {
+          "type": "string",
+          "pattern": "^\\d+$"
+        }
+      ]
+    },
+    "confirmationCode": {
+      "type": "string"
+    },
+    "secretKey": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "tls": {
+      "type": "boolean"
+    }
+  },
+  "required": [ "port", "confirmationCode", "secretKey", "path", "tls" ],
+  "additionalProperties": false
+}

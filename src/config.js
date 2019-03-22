@@ -1,38 +1,93 @@
-﻿const Util = require("util");
-const _ = require("lodash");
+﻿const _ = require("lodash");
+const Util = require("util");
+const Ajv = require("ajv");
+const Path = require("path");
+
 const readFile = Util.promisify(require("fs").readFile);
-const assert = require("./utils/assert");
-const type = require("./utils/type");
+const argcheck = require("./utils/argcheck");
+
+const readJson = (path, encoding) => {
+    return readFile(path, encoding)
+        .catch((err) => {
+            if (err.code === "ENOENT") {
+                throw new Error("File '" + path + "' does not exist!");
+            }
+
+            throw err;
+        })
+        .then((content) => {
+            let data = JSON.parse(content);
+            if (typeof data !== "object") {
+                throw new Error("Parsed config must be a JSON object!");
+            }
+
+            return data;
+        });
+};
 
 /**
  * Class used for retrieving configuration from file 
  */
 class ConfigLoader {
     constructor(path, { encoding = "utf8" }) {
-        assert(type(path, String), "Cannot create config loader: invalid path type (expected string)!");
-        assert(type(encoding, String), "Cannot create config loader: invalid encoding type (expected string)!");
+        argcheck({ path, encoding }, {
+            path: argcheck.is(String),
+            encoding: argcheck.is(String)
+        });
 
         this.path = path;
         this.encoding = encoding;
     }
     
     load() {
-        return readFile(this.path, this.encoding)
-            .catch((err) => {
-                if (err.code === "ENOENT") {
-                    throw new Error("File '" + this.path + "' does not exist!");
-                }
+        return readJson(this.path, this.encoding);
+    }
+}
 
-                throw err;
-            })
-            .then((content) => {
-                let data = JSON.parse(content);
-                if (typeof data !== "object") {
-                    throw new Error("Parsed config must be a JSON object!");
-                }
+class NullValidator {
 
+    validate(data) {
+        return data;
+    }
+}
+
+class SchemaValidator {
+
+    constructor({ directory, base, encoding }) {
+        argcheck({ directory, base, encoding }, {
+            directory: argcheck.is(String),
+            base: argcheck.is(String),
+            encoding: argcheck.is(String)
+        });
+
+        this.directory = directory;
+        this.base = base;
+        this.encoding = encoding;
+
+        this.compiler = new Ajv({ loadSchema: (path) => this.loadSchema(path), allErrors: true });
+        this.validator = null;
+    }
+
+    loadSchema(path) {
+        return readJson(Path.join(this.directory, path), this.encoding);
+    }
+
+    validate(data) {
+        return new Promise((resolve) => {
+            if (!this.validator) {
+                resolve(this.loadSchema(this.base)
+                    .then((schema) => this.compiler.compileAsync(schema))
+                    .then((validator) => this.validator = validator));
+            } else {
+                resolve(this.validator);
+            }
+        }).then((validator) => {
+            if (!validator(data)) {
+                throw new Ajv.ValidationError(validator.errors);
+            } else {
                 return data;
-            });
+            }
+        });
     }
 }
 
@@ -47,8 +102,15 @@ class Config {
      * @param {object} options Options
      * @param {string} [options.encoding] Config file encoding
      */
-    constructor(path, { encoding = "utf8" }) {
+    constructor(path, { encoding = "utf8", validation }) {
         this.loader = new ConfigLoader(path, { encoding });
+
+        if (validation === null) {
+            this.validator = new NullValidator();
+        } else {
+            let { directory, base, encoding: valEncoding } = validation;
+            this.validator = new SchemaValidator({ directory, base, encoding: valEncoding ? valEncoding : encoding });
+        }
     }
 
     /**
@@ -65,6 +127,8 @@ class Config {
      */
     load() {
         return this.loader.load()
+            .then((data) => Config.remap(data))
+            .then((data) => this.validator.validate(data))
             .then((data) => this.data = data);
     }
 
@@ -80,11 +144,19 @@ class Config {
             throw new Error("Config isn't loaded yet!");
         }
 
-        let result = _.get(this.data, path, def);
-        if (typeof result === "string" && result[0] === "#") {
-            return process.env[result.substr(1)];
-        }
-        return result;
+        return _.get(this.data, path, def);
+    }
+
+    static remap(data) {
+        _.forOwn(data, (v, k) => {
+            if (typeof v === "string" && v[0] === "#") {
+                data[k] = process.env[v.substring(1)];
+            } else if (typeof v === "object") {
+                data[k] = Config.remap(v);
+            }
+        });
+        
+        return data;
     }
 }
 

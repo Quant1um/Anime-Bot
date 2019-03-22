@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "category_booru.json",
+  "title": "Config booru category",
+  "type": "object",
+  "properties": {
+    "batchSize": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 10
+    },
+    "default": {
+      "type": "string"
+    },
+    "tokenSplitRegex": {
+      "type": "string"
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "directory": {
+          "type": "string"
+        },
+        "list": {
+          "type": "object",
+          "booru_tag": {
+            "$ref": "filter_booru_tag.json"
+          },
+          "rating_tag": {
+            "$ref": "filter_rating_tag.json"
+          },
+          "tag_mapping": {
+            "$ref": "filter_tag_mapping.json"
+          },
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "priority": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "required": [ "directory", "list", "priority" ]
+    }
+  },
+  "required": [ "batchSize", "default", "tokenSplitRegex", "filters" ],
+  "additionalProperties": false
+}

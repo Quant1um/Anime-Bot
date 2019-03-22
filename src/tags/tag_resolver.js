@@ -1,38 +1,31 @@
-﻿const Booru = require("booru");
+﻿const { TagInfo } = require("./tag_info");
+
 const _ = require("lodash");
+const Booru = require("booru");
 const RequestContext = require("./request_context");
 
-const assert = require("../utils/assert");
-const type = require("../utils/type");
-
-const RatingPrefix = "rating:";
-const RatingRegexp = /^-?rating:(.+)$/i;
-
-const BooruTagRegexp = /^(booru|from|source):(.+)$/i;
-
-const BooruDuplicationError = "booruTagDuplication";
-const BooruInvalidError = "booruInvalid";
-const BooruBlacklistedError = "booruBlacklisted";
-const RatingDuplicationError = "ratingTagDuplication";
-const RatingInvalidError = "ratingInvalid";
-
-const validRatings = {
-    e: true,
-    q: true,
-    s: true,
-    explicit: true,
-    questionable: true,
-    safe: true
-};
-
-const checkRating = (rating) => validRatings.hasOwnProperty(rating);
+const argcheck = require("../utils/argcheck");
 
 class TagResolvingError extends Error {
-    constructor(errCode) {
-        super("Tag resolving error: " + errCode);
-        this.errorCode = errCode;
+    constructor(errorCode, context) {
+        argcheck({ errorCode, context }, {
+            errorCode: argcheck.is(String),
+            context: argcheck.maybe(
+                argcheck.is(Object)
+            )
+        });
+        
+        super("Tag resolving error: [" + errorCode + "]");
+        this.errorCode = errorCode;
+        this.context = context ? context : {};
     }
 }
+
+const checkValidBooru = (val) => {
+    if (Booru.resolveSite(val.toLowerCase()) === null) {
+        throw new Error("not a valid booru");
+    }
+};
 
 class TagResolver {
 
@@ -40,113 +33,54 @@ class TagResolver {
         defaultBooru,
         batchSize = 5,
         tokenRegex = /\s+/,
-        defaultRating = null,
-        allowRatingOverride = true,
-        allowBooruOverride = true,
-        mappings = {},
-        booruBlacklist = []
+        filters = []
     }) {
-        assert(type(defaultBooru, String), "Failed to create tag resolver: invalid default booru type (expected string)!");
-        assert(type(batchSize, Number), "Failed to create tag resolver: invalid batch size type (expected number)!");
-        assert(type(tokenRegex, String, RegExp), "Failed to create tag resolver: invalid token split regexp type (expected string or regexp)!");
-        assert(type(defaultRating, String, null), "Failed to create tag resolver: invalid default rating type (expected string or null)!");
-        assert(type(allowRatingOverride, Boolean), "Failed to create tag resolver: invalid rating override allowance type (expected boolean)!");
-        assert(type(allowBooruOverride, Boolean), "Failed to create tag resolver: invalid booru override allowance type (expected boolean)!");
-        assert(type(mappings, Object), "Failed to create tag resolver: invalid mappings type (expected object)!");
-        assert(type(booruBlacklist, Array), "Failed to create tag resolver: invalid booru blacklist type (expected array)!");
+        argcheck({ defaultBooru, batchSize, tokenRegex, filters }, {
+            defaultBooru: argcheck.every(
+                argcheck.is(String),
+                checkValidBooru
+            ),
+            batchSize: argcheck.every(
+                argcheck.is(Number),
+                argcheck.integer(),
+                argcheck.between(2, 10)
+            ),
+            tokenRegex: argcheck.any(
+                argcheck.is(String),
+                argcheck.is(RegExp)
+            ),
+            filters: argcheck.values(
+                argcheck.is(Function)
+            )
+        });
 
-        assert(Booru.resolveSite(defaultBooru) !== null, "Failed to create tag resolver: given default booru doesn't exists!");
-        assert(batchSize >= 2 && batchSize <= 10, "Failed to create tag resolver: batch size must be in range of [2, 10]");
-        assert(checkRating(defaultRating), "Failed to create tag resolver: default rating is invalid!");
-
-        this.defaultBooru = defaultBooru;
-        this.defaultRating = defaultRating;
-        this.allowRatingOverride = allowRatingOverride;
-        this.allowBooruOverride = allowBooruOverride;
+        this.defaultBooru = defaultBooru.toLowerCase();
         this.tokenRegex = typeof tokenRegex === "string" ? new RegExp(tokenRegex) : tokenRegex;
         this.batchSize = batchSize;
-        this.mappings = this.fixMappings(mappings);
-        this.booruBlacklist = this.fixBlacklist(booruBlacklist);
+        this.filters = filters;
     }
     
     tokenize(string) {
         return (string || "").trim().split(this.tokenRegex).filter((str) => str) || [];
     }
-    
-    resolveCase(tags) {
-        return tags.map((str) => str.toLowerCase());
+
+    parse(tags) {
+        return tags.map((tag) => {
+            let tagInfo = TagInfo.parse(tag);
+            let error = tagInfo.validate();
+            if (error) {
+                throw new TagResolvingError(error, { tag });
+            }
+            return tagInfo;
+        });
     }
 
-    resolveMappings(tags) {
-        let result = [];
-        tags.forEach((value) => {
-            let mapped = this.mappings[value];
-            if (mapped) {
-                result.push(mapped);
-            } else {
-                result.push(value);
-            }
-        });
-        
-        return result;
-    }
-
-    resolveRating(tags) {
-        let wasOverridden = false;
-        tags = tags.filter((tag) => {
-            let result = RatingRegexp.exec(tag);
-            if (result !== null) {
-                if (!this.allowRatingOverride) {
-                    return false;
-                } else {
-                    let rating = result[1];
-                    if (!checkRating(rating)) {
-                        throw new TagResolvingError(RatingInvalidError);
-                    } else if (wasOverridden) {
-                        throw new TagResolvingError(RatingDuplicationError);
-                    }
-
-                    wasOverridden = true;
-                }
-            }
-            return true;
-        });
-        
-        if (!wasOverridden) {
-            tags.push(RatingPrefix + this.defaultRating);
+    filter(ctx) {
+        for (let filter of this.filters) {
+            filter(ctx);
         }
 
-        return tags;
-    }
-    
-    resolveBooru(tags) {
-        let override = null;
-        tags = tags.filter((tag) => {
-            let result = BooruTagRegexp.exec(tag);
-            if (result !== null) {
-                if (this.allowBooruOverride) {
-                    if (!override) {
-                        override = result[2].toLowerCase();
-                    } else {
-                        throw new TagResolvingError(BooruDuplicationError);
-                    }
-                }
-                return false;
-            }
-            return true;
-        });
-
-        if (override) {
-            if (this.booruBlacklist[override]) {
-                throw new TagResolvingError(BooruBlacklistedError);
-            } else if (Booru.resolveSite(override) !== null) {
-                return { booru: override, tags };
-            } else {
-                throw new TagResolvingError(BooruInvalidError);
-            }
-        }
-
-        return { booru: this.defaultBooru, tags };
+        return ctx;
     }
 
     resolve(tags, batch = false) {
@@ -155,55 +89,27 @@ class TagResolver {
                 tags = this.tokenize(tags);
             }
 
-            tags = this.resolveCase(tags);
-            tags = this.resolveMappings(tags);
-            tags = this.resolveRating(tags);
+            tags = this.parse(tags);
 
-            let resolved = this.resolveBooru(tags);
-            let booru = resolved.booru;
-
-            tags = resolved.tags;
-
-            resolve(new RequestContext({
+            let booru = this.defaultBooru;
+            let ctx = new RequestContext({
                 tags, booru,
                 count: batch ? this.batchSize : 1
-            }));
+            });
+
+            ctx = this.filter(ctx);
+
+            ctx.tags.forEach((tagInfo) => {
+                let error = tagInfo.validate();
+                if (error) {
+                    throw new Error(`Malformed tag: ${tagInfo.toString()} [${error}]`);
+                }
+            });
+
+            resolve(ctx);
         });
-    }
-    
-    fixMappings(mappings) {
-        _.forOwn(mappings, (value, index) => {
-            value = value.toLowerCase();
-            index = index.toLowerCase();
-
-            assert(this.tokenize(index).length === 1, "Error: probably one of the mappings' keys contains more than 1 tag");
-            assert(this.tokenize(value).length === 1, "Error: probably one of the mappings' values contains more than 1 tag");
-
-            mappings[index] = value;
-        });
-
-        return mappings;
-    }
-
-    fixBlacklist(list) {
-        let result = {};
-        list.forEach((value) => {
-            let newValue = value.toLowerCase();
-            assert(Booru.resolveSite(newValue) !== null, "Error: one of blacklisted boorus (" + newValue + ") are not exists!");
-
-            result[newValue] = true;
-        });
-        
-        return result;
     }
 }
 
 module.exports = TagResolver;
 module.exports.Error = TagResolvingError;
-module.exports.ErrorCodes = {
-    BooruDuplicationError,
-    BooruInvalidError,
-    BooruBlacklistedError,
-    RatingInvalidError,
-    RatingDuplicationError
-};

@@ -22,12 +22,22 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="config.json" />
+    <Content Include="src\schemas\base.json" />
+    <Content Include="src\schemas\category_booru.json" />
+    <Content Include="src\schemas\category_listening.json" />
+    <Content Include="src\schemas\category_text.json" />
+    <Content Include="src\schemas\category_image.json" />
+    <Content Include="src\schemas\category_vk.json" />
+    <Content Include="src\schemas\filter_tag_mapping.json" />
+    <Content Include="src\schemas\filter_rating_tag.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AnimeBot" />
     <Folder Include="AnimeBot\AnimeBot" />
+    <Folder Include="src\schemas\" />
     <Folder Include="src\" />
     <Folder Include="src\tags\" />
+    <Folder Include="src\tags\filters\" />
     <Folder Include="src\utils\" />
   </ItemGroup>
   <ItemGroup>
@@ -38,22 +48,25 @@
     <Compile Include="src\config.js" />
     <Compile Include="src\image_loader.js" />
     <Compile Include="src\index.js" />
+    <Compile Include="src\l10n.js" />
     <Compile Include="src\listener.js" />
     <Compile Include="src\local_test.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\schemas\filter_booru_tag.json" />
+    <Compile Include="src\tags\filters\tag_mapping.js" />
+    <Compile Include="src\tags\filters\rating_tag.js" />
+    <Compile Include="src\tags\filters\booru_tag.js" />
+    <Compile Include="src\tags\filter_loader.js" />
     <Compile Include="src\tags\request_context.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\tags\tag_info.js" />
     <Compile Include="src\tags\tag_resolver.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="src\utils\assert.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="src\utils\type.js">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="src\utils\format_unicorn.js" />
+    <Compile Include="src\utils\argcheck.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->

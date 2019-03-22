@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "base.json",
+  "title": "Config base",
+  "type": "object",
+  "properties": {
+    "booru": {
+      "description": "Config booru category",
+      "$ref": "category_booru.json"
+    },
+    "listening": {
+      "description": "Config vk listener category",
+      "$ref": "category_listening.json"
+    },
+    "vk": {
+      "description": "Config vk access category",
+      "$ref": "category_vk.json"
+    },
+    "text": {
+      "description": "Config localization/messages text category",
+      "$ref": "category_text.json"
+    },
+    "image": {
+      "description": "Config image category",
+      "$ref": "category_image.json"
+    }
+  },
+  "required": [ "booru", "listening", "vk", "text", "image" ]
+}
