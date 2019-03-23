@@ -27,9 +27,9 @@ argcheck.is = (constructor) => {
 argcheck.instanceof = (constructor) => {
     return (val) => {
         if (val === null) {
-            throw new Error(`${constructor.name} expected, got null`);
+            throw new Error(`instance of ${constructor.name} expected, got null`);
         } else if (typeof val === "undefined") {
-            throw new Error(`${constructor.name} expected, got undefined`);
+            throw new Error(`instance of ${constructor.name} expected, got undefined`);
         } else if (val instanceof constructor) {
             throw new Error(`instance of ${constructor.name} expected, got ${val.constructor}`);
         }
