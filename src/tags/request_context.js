@@ -11,10 +11,11 @@ const checkValidBooru = (val) => {
 
 class RequestContext {
 
-    constructor({ tags, booru, count = 1, random = true }) {
+    constructor({ tags, booru, count = 1, page = 0, random = true }) {
         this.tags = tags;
         this.booru = booru;
         this.count = count;
+        this.page = page;
         this.random = random;
     }
 
@@ -61,6 +62,22 @@ class RequestContext {
         });
 
         this.__count = count;
+    }
+
+    get page() {
+        return this.__page;
+    }
+
+    set page(page) {
+        argcheck({ page }, {
+            page: argcheck.every(
+                argcheck.is(Number),
+                argcheck.integer(),
+                argcheck.between(0, +Infinity)
+            )
+        });
+
+        this.__page = page;
     }
 
     get random() {

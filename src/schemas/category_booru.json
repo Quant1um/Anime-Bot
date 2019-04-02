@@ -26,6 +26,9 @@
           "booru_tag": {
             "$ref": "filter_booru_tag.json"
           },
+          "page_tag": {
+            "$ref": "filter_page_tag.json"
+          },
           "rating_tag": {
             "$ref": "filter_rating_tag.json"
           },
