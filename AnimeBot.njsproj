@@ -18,7 +18,6 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <Content Include="package-lock.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="config.json" />
@@ -28,6 +27,7 @@
     <Content Include="src\schemas\category_text.json" />
     <Content Include="src\schemas\category_image.json" />
     <Content Include="src\schemas\category_vk.json" />
+    <Content Include="src\schemas\filter_page_tag.json" />
     <Content Include="src\schemas\filter_tag_mapping.json" />
     <Content Include="src\schemas\filter_rating_tag.json" />
   </ItemGroup>
@@ -54,6 +54,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="src\schemas\filter_booru_tag.json" />
+    <Compile Include="src\tags\filters\page_tag.js" />
     <Compile Include="src\tags\filters\tag_mapping.js" />
     <Compile Include="src\tags\filters\rating_tag.js" />
     <Compile Include="src\tags\filters\booru_tag.js" />

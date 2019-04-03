@@ -18,19 +18,25 @@
           "overridable": true
         },
 
+        "page_tag": {
+          "tags": [ "page", "pid", "p" ]
+        },
+
         "tag_mapping": {
           "mappings": {
             "s": "rating:s",
             "q": "rating:q",
             "e": "rating:e",
-            "h": "rating:h",
+            "h": "rating:e",
             "*": "rating:*"
           }
         }
       },
+      
       "priority": [
         "tag_mapping",
         "booru_tag",
+        "page_tag",
         "rating_tag"
       ]
     }
@@ -69,6 +75,10 @@
           "multipleTags": "Cannot have more than 1 booru tag!",
           "doesntExist": "Booru '{value}' doesn't exist!",
           "blacklisted": "Booru '{value}' is blacklisted!"
+        },
+        "page": {
+          "multipleTags": "Cannot have more than 1 page tag!",
+          "invalidPage": "'{value}' is not a valid page!"
         }
       }
     },
