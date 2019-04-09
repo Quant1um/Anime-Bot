@@ -52,7 +52,6 @@ class Listener {
 
         this.api.updates.use(async (context, next) => {
             this.handler(context);
-            [context.type, ...context.subTypes].forEach((a) => console.log(a));
             await next();
         });
 

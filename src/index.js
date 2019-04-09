@@ -118,20 +118,22 @@ Promise.resolve()
                 });
         }
 
-        eventBus.on("text", (context) => {
-            context.setActivity();
+        eventBus.on("message", (context) => {
+            if (context.hasText) {
+                context.setActivity();
 
-            let payload = context.messagePayload;
-            let tags, batch;
-            if (payload) {
-                tags = payload.tags;
-                batch = payload.batch;
-            } else {
-                tags = context.text;
-                batch = false;
+                let payload = context.messagePayload;
+                let tags, batch;
+                if (payload) {
+                    tags = payload.tags;
+                    batch = payload.batch;
+                } else {
+                    tags = context.text;
+                    batch = false;
+                }
+
+                sendBooruImages(context, tags, batch);
             }
-
-            sendBooruImages(context, tags, batch);
         });
     })
     .then(() => listener.start()) //start listener
