@@ -97,7 +97,7 @@ Promise.resolve()
             tagResolver.resolve(tags, batch)
                 .then((rctx) => BooruFetcher.fetch(rctx))
                 .then((images) => Array.from(images))
-                .then((images) => images.map((image) => image.common.file_url))
+                .then((images) => images.map((image) => image.file_url))
                 .then((images) => processImages(context, images))
                 .then((images) => {
                     if (images.length) {
