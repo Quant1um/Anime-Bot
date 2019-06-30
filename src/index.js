@@ -103,8 +103,13 @@ Promise.resolve()
 
         function sendBooruImages(context, tags, batch, entries) {
             let info = new InfoCollector(); //for future use
+            let request = null;
             return tagResolver.resolve(tags, batch, entries)
-                .then((rctx) => BooruFetcher.fetch(rctx))
+                .then((req) => {
+                    request = req;
+                    return req;
+                })
+                .then((req) => BooruFetcher.fetch(req))
                 .then((images) => Array.from(images))
                 .then((images) => images.map((image) => {
                     info.update(image);
