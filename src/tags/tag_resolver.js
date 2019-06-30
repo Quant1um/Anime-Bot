@@ -92,7 +92,7 @@ class TagResolver {
             tags = this.parse(tags);
 
             let pagesize = batch ? this.batchSize : 1;
-            let page = Math.float(entries / pagesize);
+            let page = Math.floor(entries / pagesize);
             
             let booru = this.defaultBooru;
             let ctx = new RequestContext({
