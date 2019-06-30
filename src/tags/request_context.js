@@ -11,7 +11,7 @@ const checkValidBooru = (val) => {
 
 class RequestContext {
 
-    constructor({ tags, booru, count = 1, page = 0, random = true }) {
+    constructor({ tags, booru, count = 1, page = 0, random = false }) {
         this.tags = tags;
         this.booru = booru;
         this.count = count;
@@ -57,6 +57,7 @@ class RequestContext {
             count: argcheck.every(
                 argcheck.is(Number),
                 argcheck.integer(),
+                argcheck.finite(),
                 argcheck.between(1, 10)
             )
         });
@@ -73,6 +74,7 @@ class RequestContext {
             page: argcheck.every(
                 argcheck.is(Number),
                 argcheck.integer(),
+                argcheck.finite(),
                 argcheck.between(0, +Infinity)
             )
         });

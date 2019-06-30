@@ -52,6 +52,14 @@ argcheck.integer = () => {
     };
 };
 
+argcheck.finite = () => {
+    return (val) => {
+        if (!isFinite(val)) {
+            throw new Error("finite number expected");
+        }
+    };
+};
+
 argcheck.every = (...funcs) => {
     return (val) => {
         funcs.forEach((func) => func(val));
