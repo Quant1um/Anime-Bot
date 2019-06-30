@@ -56,8 +56,7 @@ Promise.resolve()
         l10n = new L10n(config.get("text"));
     })
     .then(() => { // bot logic
-        function buildKeyboard(req) {
-            let tags = req.tags;
+        function buildKeyboard(tags, req) {
             let entries = req.count * (req.page + 1);
             return Keyboard.keyboard([[
                 Keyboard.textButton({
@@ -102,9 +101,9 @@ Promise.resolve()
                 .then((string) => context.send(string));
         }
 
-        function sendBooruImages(context, request) {
+        function sendBooruImages(context, tags, batch, entries) {
             let info = new InfoCollector(); //for future use
-            return Promise.resolve(request)
+            return tagResolver.resolve(tags, batch, entries)
                 .then((rctx) => BooruFetcher.fetch(rctx))
                 .then((images) => Array.from(images))
                 .then((images) => images.map((image) => {
@@ -116,7 +115,7 @@ Promise.resolve()
                     if (images.length) {
                         context.send({
                             attachment: images,
-                            keyboard: buildKeyboard(request)
+                            keyboard: buildKeyboard(tags, request)
                         });
                     } else {
                         context.reply(l10n.get("noImages"));
@@ -147,8 +146,7 @@ Promise.resolve()
                     entries = 0;
                 }
 
-                tagResolver.resolve(tags, batch, entries)
-                    .then((request) => sendBooruImages(context, request));
+                sendBooruImages(context, tags, batch, entries);
             }
         });
     })
