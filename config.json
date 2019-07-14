@@ -85,7 +85,12 @@
 
     "buttons": {
       "more": "More",
-      "batch": "Batch"
+      "batch": "Batch",
+      "info": "Show tags"
+    },
+
+    "info": {
+      "tags": "Tags: \n{tags}"
     }
   },
 

@@ -17,6 +17,7 @@ const BooruFetcher          = require("./booru_fetcher");
 const L10n                  = require("./l10n");
 const TagResolver           = require("./tags/tag_resolver");
 const FilterLoader          = require("./tags/filter_loader");
+const InfoCollector         = require("./info_collector");
 const Listener              = getListenerClass();
 
 let config, eventBus, listener, imageLoader, tagResolver, l10n;
@@ -55,16 +56,17 @@ Promise.resolve()
         l10n = new L10n(config.get("text"));
     })
     .then(() => { // bot logic
-        function buildKeyboard(tags) {
+        function buildKeyboard(tags, req) {
+            let entries = req.count * (req.page + 1);
             return Keyboard.keyboard([[
                 Keyboard.textButton({
                     label: l10n.get("buttons.more"),
-                    payload: { tags, batch: false },
+                    payload: { tags, entries, batch: false },
                     color: Keyboard.PRIMARY_COLOR
                 }),
                 Keyboard.textButton({
                     label: l10n.get("buttons.batch"),
-                    payload: { tags, batch: true },
+                    payload: { tags, entries, batch: true },
                     color: Keyboard.DEFAULT_COLOR
                 })
             ]]);
@@ -92,18 +94,33 @@ Promise.resolve()
                 .then((images) => Promise.all(uploadImages(context, images))) //upload each onto vk server
                 .then(filterImages); //filter failed ones, again
         }
-        
-        function sendBooruImages(context, tags = [], batch = false) {
-            tagResolver.resolve(tags, batch)
-                .then((rctx) => BooruFetcher.fetch(rctx))
+
+        function sendBooruInfo(context, info) {
+            return Promise.resolve(info)
+                .then((info) => l10n.format({ tags: info.tags.join(", ") }, "info.tags"))
+                .then((string) => context.send(string));
+        }
+
+        function sendBooruImages(context, tags, batch, entries) {
+            let info = new InfoCollector(); //for future use
+            let request = null;
+            return tagResolver.resolve(tags, batch, entries)
+                .then((req) => {
+                    request = req;
+                    return req;
+                })
+                .then((req) => BooruFetcher.fetch(req))
                 .then((images) => Array.from(images))
-                .then((images) => images.map((image) => image.file_url))
+                .then((images) => images.map((image) => {
+                    info.update(image);
+                    return image.file_url;
+                }))
                 .then((images) => processImages(context, images))
                 .then((images) => {
                     if (images.length) {
                         context.send({
                             attachment: images,
-                            keyboard: buildKeyboard(tags)
+                            keyboard: buildKeyboard(tags, request)
                         });
                     } else {
                         context.reply(l10n.get("noImages"));
@@ -123,16 +140,18 @@ Promise.resolve()
                 context.setActivity();
 
                 let payload = context.messagePayload;
-                let tags, batch;
+                let tags, batch, entries;
                 if (payload) {
                     tags = payload.tags;
                     batch = payload.batch;
+                    entries = payload.entries;
                 } else {
                     tags = context.text;
                     batch = false;
+                    entries = 0;
                 }
 
-                sendBooruImages(context, tags, batch);
+                sendBooruImages(context, tags, batch, entries);
             }
         });
     })

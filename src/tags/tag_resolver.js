@@ -83,20 +83,23 @@ class TagResolver {
         return ctx;
     }
 
-    resolve(tags, batch = false) {
+    resolve(tags, batch = false, entries = 0) {
         return new Promise((resolve) => {
             if (!Array.isArray(tags)) {
                 tags = this.tokenize(tags);
             }
-
+            
             tags = this.parse(tags);
 
+            let pagesize = batch ? this.batchSize : 1;
+            let page = Math.floor(entries / pagesize);
+            
             let booru = this.defaultBooru;
             let ctx = new RequestContext({
-                tags, booru,
-                count: batch ? this.batchSize : 1
+                tags, booru, page,
+                count: pagesize
             });
-
+            
             ctx = this.filter(ctx);
 
             ctx.tags.forEach((tagInfo) => {

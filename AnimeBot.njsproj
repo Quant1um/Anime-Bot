@@ -48,6 +48,9 @@
     <Compile Include="src\config.js" />
     <Compile Include="src\image_loader.js" />
     <Compile Include="src\index.js" />
+    <Compile Include="src\info_collector.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\l10n.js" />
     <Compile Include="src\listener.js" />
     <Compile Include="src\local_test.js">
