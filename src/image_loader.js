@@ -26,10 +26,11 @@ class ImageLoader {
     }
     
     resizeIfNecessary(image) {
-        if (image.metadata.width > this.maxWidth ||
-            image.metadata.height > this.maxHeight) {
+        if (image.bitmap.width > this.maxWidth ||
+            image.bitmap.height > this.maxHeight) {
             return image.scaleToFit(this.maxWidth, this.maxHeight, jimp.AUTO);
         }
+
         return image;
     }
 }
