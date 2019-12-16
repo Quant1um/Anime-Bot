@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const sharp = require("sharp");
+const jimp = require("jimp");
 
 class ImageLoader {
 
@@ -17,18 +17,20 @@ class ImageLoader {
     }
 
     process(buffer) {
-        const image = sharp(buffer);
-        return image
-            .metadata()
-            .then((metadata) => this.resizeIfNecessary(metadata, image))
-            .then((image) => image.jpeg({ quality: this.quality }).toBuffer());
+        return jimp.read(buffer)
+            .then((image) => 
+                this.resizeIfNecessary(image)
+                    .quality(this.quality)
+                    .getBufferAsync(jimp.MIME_JPEG)
+            );
     }
     
-    resizeIfNecessary(metadata, image) {
-        if (metadata.width > this.maxWidth ||
-            metadata.maxHeight > this.maxHeight) {
-            return image.resize(this.maxWidth, this.maxHeight, { fit: "inside" });
+    resizeIfNecessary(image) {
+        if (image.bitmap.width > this.maxWidth ||
+            image.bitmap.height > this.maxHeight) {
+            return image.scaleToFit(this.maxWidth, this.maxHeight, jimp.AUTO);
         }
+
         return image;
     }
 }
