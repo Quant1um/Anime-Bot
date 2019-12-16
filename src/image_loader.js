@@ -18,14 +18,16 @@ class ImageLoader {
 
     process(buffer) {
         return jimp.read(buffer)
-            .then((image) => this.resizeIfNecessary(metadata, image))
-            .then((image) => image.quality(this.quality))
-            .then((image) => image.getBufferAsync(jimp.MIME_JPEG));
+            .then((image) => 
+                this.resizeIfNecessary(image)
+                    .quality(this.quality)
+                    .getBufferAsync(jimp.MIME_JPEG)
+            );
     }
     
-    resizeIfNecessary(metadata, image) {
-        if (metadata.width > this.maxWidth ||
-            metadata.maxHeight > this.maxHeight) {
+    resizeIfNecessary(image) {
+        if (image.metadata.width > this.maxWidth ||
+            image.metadata.height > this.maxHeight) {
             return image.scaleToFit(this.maxWidth, this.maxHeight, jimp.AUTO);
         }
         return image;
