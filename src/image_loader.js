@@ -24,10 +24,10 @@ class ImageLoader {
             .then((image) => image.jpeg({ quality: this.quality }).toBuffer());
     }
     
-    resizeIfNecessary(image) {
-        if (image.bitmap.width > this.maxWidth ||
-            image.bitmap.height > this.maxHeight) {
-            return image.scaleToFit(this.maxWidth, this.maxHeight, jimp.AUTO);
+    resizeIfNecessary(metadata, image) {
+        if (metadata.width > this.maxWidth ||
+            metadata.maxHeight > this.maxHeight) {
+            return image.resize(this.maxWidth, this.maxHeight, { fit: "inside" });
         }
 
         return image;
