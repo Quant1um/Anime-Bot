@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/Quant1um/Anime-Bot#readme",
   "dependencies": {
-    "ajv": "^6.10.1",
+    "ajv": "^6.12.3",
     "booru": "^2.0.2",
     "lodash": "^4.17.13",
     "node-fetch": "^2.6.0",
